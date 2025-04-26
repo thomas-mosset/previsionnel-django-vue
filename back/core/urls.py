@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import CategoryViewSet, IncomeViewSet, ExpenseViewSet, BudgetViewSet
 
 router = DefaultRouter()
@@ -8,8 +9,13 @@ router.register(r'incomes', IncomeViewSet) # -> '/api/incomes/'
 router.register(r'expenses', ExpenseViewSet) # -> '/api/expenses/'
 router.register(r'budgets', BudgetViewSet) # -> '/api/budgets/'
 
-# '/api/register/' ONLY FOR POST ROUTE (no need to write it, it's taken care of by dj-rest-auth + django-allauth)
+# '/api/auth/register/' ONLY FOR POST ROUTE (no need to write it, it's taken care of by dj-rest-auth + django-allauth)
+# '/api/auth/login/' ONLY FOR POST ROUTE (no need to write it, it's taken care of by dj-rest-auth + django-allauth)
+# '/api/auth/logout/' ONLY FOR POST ROUTE (no need to write it, it's taken care of by dj-rest-auth + django-allauth)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('api/auth/', include('dj_rest_auth.urls')), # Default dj-rest-auth authentication routes
+    path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # Route to obtain a token
+    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # Route to refresh a token
 ]
