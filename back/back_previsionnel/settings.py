@@ -45,6 +45,29 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 REST_USE_JWT = True
 SITE_ID = 1
 
+# Instead of sending a real email, Django will just print the contents of the email to the console. See example between the ''' mail '''
+# It's just for the prod /!\)
+# If we don't put it, the server tries to send a confirmation email through a SMTP server (that I don't have now)
+'''
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [example.com] Please Confirm Your Email Address
+From: webmaster@localhost
+To: random@gmail.com
+Date: Sat, 26 Apr 2025 15:44:16 -0000
+Message-ID: <174568225673.18832.10590203397106141690@DESKTOP-FDH37Q5>
+
+Hello from example.com!
+
+You're receiving this email because user Random_user has given your email address to register an account on example.com.
+
+To confirm this is correct, go to http://127.0.0.1:8000/api/register/account-confirm-email/Mg:1u8hhQ:EsEevR01qTO40WP6XzuvaeSullDQszJ4xIsoK0rNeyA/
+
+Thank you for using example.com!
+example.com
+'''
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
 
 # Application definition
 
@@ -57,9 +80,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'rest_framework',
+    'rest_framework.authtoken',
     'core',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'dj_rest_auth.registration',
 ]
 
@@ -86,6 +111,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware', # the line's place in the array is important. Need to be after the auth
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

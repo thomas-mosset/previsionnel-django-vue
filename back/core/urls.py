@@ -8,6 +8,8 @@ router.register(r'incomes', IncomeViewSet) # -> '/api/incomes/'
 router.register(r'expenses', ExpenseViewSet) # -> '/api/expenses/'
 router.register(r'budgets', BudgetViewSet) # -> '/api/budgets/'
 
+# '/api/register/' ONLY FOR POST ROUTE (no need to write it, it's taken care of by dj-rest-auth + django-allauth)
+
 urlpatterns = [
     path('', include(router.urls)),
 ]

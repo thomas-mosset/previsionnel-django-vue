@@ -26,3 +26,9 @@ class BudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Budget
         fields = ['id', 'user', 'category', 'amount', 'month', 'year']
+
+
+# no need to create a UserSerializer. It is already taken care of by dj-rest-auth + django-allauth
+# dj-rest-auth.registration already provides an /api/register/ route with a built-in serializer.
+# This serializer is internally called: dj_rest_auth.registration.serializers.RegisterSerializer
+# And it handles email, username, password1, and password2 (pwd confirmation), all ready to go.
