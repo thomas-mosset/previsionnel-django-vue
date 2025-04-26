@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 import environ
 import os
@@ -41,6 +42,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
+REST_USE_JWT = True
+SITE_ID = 1
+
 
 # Application definition
 
@@ -51,18 +55,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'core',
+    'allauth',
+    'allauth.account',
+    'dj_rest_auth.registration',
 ]
 
 # Django REST
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication', <- no need if front is 100% Vuejs
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.AllowAny', ### TODO change after dev with : 'permission_classes = [IsAuthenticated]' | It will oblige to be logged in to access personnal data
     ]
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # 30 min lifetime for the access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # 1 day for the refresh token
 }
 
 MIDDLEWARE = [
@@ -123,6 +138,12 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # for classic Django authentication
+    'allauth.account.auth_backends.AuthenticationBackend',  # allows allauth to handle auth
+)
 
 
 # Internationalization

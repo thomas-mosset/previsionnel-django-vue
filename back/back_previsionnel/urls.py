@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('core.urls')) # <- connection to my app routes (core/urls.py)
+    path('admin/', admin.site.urls),  # Access to admin Django
+    path('api/', include('core.urls')), # <- connection to my app routes (core/urls.py)
+    path('api/auth/', include('dj_rest_auth.urls')), # routes for login/logout/password reset
+    path('api/register/', include('dj_rest_auth.registration.urls')), # route for the registration of new users
 ]
