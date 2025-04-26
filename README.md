@@ -9,5 +9,8 @@
 ### Back
 
 - Django
+- Django REST framework
+- Django-environ (for .env / environment)
+- Pip
 
 ## Fonctionnalités

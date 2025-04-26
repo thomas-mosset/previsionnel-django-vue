@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# DB
+db.sqlite3
+
+# Environment
+.env
