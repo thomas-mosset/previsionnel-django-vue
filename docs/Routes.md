@@ -4,7 +4,7 @@
 
 | **Méthode** | **Route**                       | **Description**                                                                 |
 |-------------|----------------------------------|---------------------------------------------------------------------------------|
-| ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/register/`           | Enregistrement d'un nouvel utilisateur.                                            |
+| ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/registration/`           | Enregistrement d'un nouvel utilisateur.                                            |
 | ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/login/`              | Connexion d'un utilisateur existant. Retourne un token JWT pour l'authentification.|
 | ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/logout/`             | Déconnexion de l'utilisateur. Expire le token JWT.                              |
 | ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/password/reset/`             | Réinitialisation du mot de passe de l'utilisateur.                         |
