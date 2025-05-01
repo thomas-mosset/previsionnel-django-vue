@@ -1,11 +1,22 @@
 @import './base.css';
 
+body {
+  background-color:#212121;
+}
+
 #app {
   background-color: #FFFFFF;
   max-width: 80vw;
-  margin: 2rem auto;
+  margin: 6rem auto 2rem;
   padding: 1rem;
   font-weight: normal;
   border: white solid 5px;
   border-radius: 0.3rem;
+}
+
+.routerLink {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
 }

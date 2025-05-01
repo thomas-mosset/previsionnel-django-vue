@@ -63,10 +63,7 @@ const authStore = useAuthStore();
 const user = authStore.user;
 const isAuthenticated = authStore.isAuthenticated;
 
-
-// const names = ['incomes', 'expenses', 'categories', 'budgets'];
 const color = ref('grey-darken-4');
-
 
 const cardsInfos = [
   {
@@ -100,10 +97,3 @@ const cardsInfos = [
 ];
 
 </script>
-
-<style>
-.routerLink {
-  color: white;
-  text-decoration: none;
-}
-</style>
