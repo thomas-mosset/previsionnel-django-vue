@@ -47,6 +47,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const username = ref('')
 const email = ref('')
@@ -66,7 +69,9 @@ const handleLogin = async () => {
 
   try {
     await authStore.login(username.value, email.value, password.value) ;
-    console.log("login ok")
+
+    // Redirect to profil page after successfull login
+    router.push('/profil')
   } catch (err) {
     error.value = err.message ;
   }

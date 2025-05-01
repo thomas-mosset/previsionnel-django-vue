@@ -10,6 +10,7 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(username, email, password) {
+
       try {
         const response = await axios.post('http://127.0.0.1:8000/api/auth/login/', {
           username,
@@ -24,10 +25,12 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('token', this.token)
 
       } catch (error) {
-        throw new Error('Nom d\'utilisateur ou mot de passe incorrect', error)
+        console.log('catch error', error.response?.data?.detail);
+
+        throw new Error(error.response?.data?.detail || 'Nom d\'utilisateur ou mot de passe incorrect');
       }
     },
-    async register(username, email, password, passwordConfirmation) {
+    async registration(username, email, password, passwordConfirmation) {      
       try {
         const response = await axios.post('http://127.0.0.1:8000/api/auth/registration/', {
           username,
@@ -43,8 +46,13 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('token', this.token);
 
       } catch (error) {
-        console.log(error.response?.data?.detail || error.message);
-        throw new Error('Erreur lors de l\'inscription');
+        console.log('Full error response:', error.response?.data || error.message);
+        throw new Error(
+          error.response?.data?.email?.[0] ||
+          error.response?.data?.password1?.[0] ||
+          error.response?.data?.non_field_errors?.[0] ||
+          'Erreur lors de l\'inscription'
+        );
       }
     },
   },

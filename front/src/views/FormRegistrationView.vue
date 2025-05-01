@@ -10,13 +10,13 @@
         <v-col class="mx-auto" cols="12" md="10" lg="6">
           <v-form
             v-model="valid"
-            @submit.prevent="handleRegister"
+            @submit.prevent="handleRegistration"
             ref="form"
           >
             <v-text-field
               label="Nom d'utilisateur"
               v-model="username"
-              :rule="[rules.required]"
+              :rule="[rules.required, rules.username]"
             />
 
             <v-text-field
@@ -55,6 +55,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const username = ref('')
 const email = ref('')
@@ -68,14 +71,17 @@ const authStore = useAuthStore()
 const rules = {
   required: (v) => !!v || 'Champ requis',
   email: (v) => /.+@.+\..+/.test(v) || 'Email invalide',
+  username: (v) => /^[a-zA-Z0-9_]+$/.test(v) || "Nom d'utilisateur invalide (lettres, chiffres, underscores uniquement)",
 }
 
-const handleRegister = async () => {
+const handleRegistration = async () => {
   error.value = null
 
   try {
-    await authStore.register(username.value, email.value, password.value, passwordConfirmation.value) ;
-    console.log("register ok")
+    await authStore.registration(username.value, email.value, password.value, passwordConfirmation.value);
+
+    // Redirect to profil page after successfull login
+    router.push('/profil')
   } catch (err) {
     error.value = err.message ;
   }

@@ -22,7 +22,7 @@
         <v-col cols="12" md="5">
           <v-card text="Pour créer votre prévisionnel, enregistrez-vous." variant="outlined">
             <v-card-actions>
-              <RouterLink to="/register">
+              <RouterLink to="/registration">
                 <v-btn variant="tonal" color="grey-darken-4">Créer un compte</v-btn>
               </RouterLink>
             </v-card-actions>
