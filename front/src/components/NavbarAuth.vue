@@ -31,7 +31,13 @@
             :key="index.text"
             :value="index.text"
           >
-            <v-list-item-title>
+            <v-list-item-title v-if="item.text === 'Se déconnecter'">
+              <a href="#" @click.prevent="handleLogout" class="routerLinkMobile">
+                {{ item.text }}
+              </a>
+            </v-list-item-title>
+            
+            <v-list-item-title v-else>
               <RouterLink :to="item.link"  class="routerLinkMobile">
                 {{ item.text }}
               </RouterLink>
@@ -51,9 +57,17 @@
       slider-color="white"
     >
       <v-tab v-for="item in navItems" :key="item.text" :value="item.text" class="text-capitalize">
-        <RouterLink :to="item.link" class="routerLink">
-          {{ item.text }}
-        </RouterLink>
+
+        <template v-if="item.text === 'Se déconnecter'">
+          <a href="#" @click.prevent="handleLogout" class="routerLink">
+            {{ item.text }}
+          </a>
+        </template>
+        <template v-else>
+          <RouterLink :to="item.link" class="routerLink">
+            {{ item.text }}
+          </RouterLink>
+        </template>
       </v-tab> 
     </v-tabs>
   </v-app-bar>
@@ -62,6 +76,12 @@
 <script setup>
 
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const currentTab = ref('Dashboard');
+const router = useRouter()
+const authStore = useAuthStore();
 
 const navItems = [
   { text: 'Dashboard', link: '/profil' },
@@ -72,6 +92,16 @@ const navItems = [
   { text: 'Se déconnecter', link: '/logout' },
 ]
 
-const currentTab = ref('Dashboard');
+const handleLogout = async () => {
+  console.log("handleLogout");
+
+  try {
+    await authStore.logout();
+    router.push('/login'); // Redirect to login page
+
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 </script>

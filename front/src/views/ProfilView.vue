@@ -9,7 +9,7 @@
         </v-row>
       </div>
 
-      <div v-else class="w-100 text-center mt-16">
+      <div v-else class="w-100 text-center mt-2">
         <v-row>
           <v-col>
             <h1 class="font-weight-bold text-center mb-16">Bienvenue sur votre profil {{ user }}.</h1>

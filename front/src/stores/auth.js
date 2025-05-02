@@ -55,5 +55,20 @@ export const useAuthStore = defineStore('auth', {
         );
       }
     },
+    async logout(){
+      console.log("logout auth");
+
+      try {
+        await axios.post('http://127.0.0.1:8000/api/auth/logout/');
+
+        this.token = null;
+        this.isAuthenticated = false;
+        localStorage.removeItem('token');
+      } catch (error) {
+        console.log('catch error', error.response?.data?.detail);
+
+        throw new Error(error.response?.data?.detail || 'Erreur lors de la déconnexion.');
+      }
+    },
   },
 })
