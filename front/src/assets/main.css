@@ -20,3 +20,15 @@ body {
   font-weight: bold;
   text-transform: uppercase;
 }
+
+.routerLinkMobile {
+  color: #212121;
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.routerLinkMobile:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
