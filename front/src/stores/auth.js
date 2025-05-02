@@ -4,6 +4,7 @@ import axios from 'axios'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
+    userEmail: null,
     token: null,
     isAuthenticated: false,
   }),
@@ -20,6 +21,7 @@ export const useAuthStore = defineStore('auth', {
 
         this.token = response.data.access;
         this.user = username;
+        this.userEmail = email;
         this.isAuthenticated = true;
 
         localStorage.setItem('token', this.token)
@@ -41,6 +43,7 @@ export const useAuthStore = defineStore('auth', {
 
         this.token = response.data.access;
         this.user = username;
+        this.userEmail = email;
         this.isAuthenticated = true;
 
         localStorage.setItem('token', this.token);

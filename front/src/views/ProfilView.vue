@@ -47,6 +47,33 @@
             </v-card>
           </v-col>
         </v-row>
+
+        <v-row class="my-16">
+          <v-col>
+            <v-card
+              class="mx-auto"
+              width="400"
+              elevation="8"
+            >
+              <template v-slot:title>
+                <span class="font-weight-black">Mes informations</span>
+              </template>
+
+              <v-card-text class="bg-surface-light pt-4">
+                Nom d'utilisateur : {{ user }}
+              </v-card-text>
+              <v-card-text class="bg-surface-light pt-4">
+                Email : {{ userEmail }}
+              </v-card-text>
+
+              <!-- TODO
+                <v-card-actions class="d-flex justify-center">
+                  <v-btn>Modifier</v-btn>
+                </v-card-actions>
+              -->
+            </v-card>
+          </v-col>
+        </v-row>
       </div>
     </v-container>
   </main>
@@ -61,6 +88,7 @@ import { useAuthStore } from '@/stores/auth';
 const authStore = useAuthStore();
 
 const user = authStore.user;
+const userEmail = authStore.userEmail;
 const isAuthenticated = authStore.isAuthenticated;
 
 const color = ref('grey-darken-4');
