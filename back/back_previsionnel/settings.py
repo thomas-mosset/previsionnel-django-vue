@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',  # to blacklist JWT
 ]
 
 # Django REST
@@ -105,6 +106,8 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # 30 min lifetime for the access token
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # 1 day for the refresh token
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 MIDDLEWARE = [
