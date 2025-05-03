@@ -35,3 +35,12 @@ class LoggedInUserUpdateView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         # function that return the current logged in user
         return self.request.user
+
+class LoggedInUserDetailView(generics.RetrieveAPIView):
+    """ view to get the current logged in user's details / infos """
+    serializer_class = UserSerializer
+    permissions_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # function that return the current logged in user
+        return self.request.user

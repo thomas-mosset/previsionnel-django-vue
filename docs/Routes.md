@@ -12,7 +12,8 @@
 | ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/password/change/`             | Modification du mot de passe de l'utilisateur.                         |
 | ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)     | `/api/auth/email/verification/`             | Vérification de l'email de l'utilisateur.                         |
 | ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/token/refresh/`      | Rafraîchissement du token JWT avec un token de rafraîchissement.                |
-| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)     | `/api/auth/user/`             | Récupération des informations de l'utilisateur connecté.                         |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)     | `/api/auth/user/`             | Récupération des informations de l'utilisateur connecté (pk, username, email, first_name, last_name). (Route protégée par token.)                        |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)     | `/api/user/current/details/`             | Récupération des informations de l'utilisateur connecté (id, username, email). (Route protégée par token.)                          |
 | ![PATCH](https://img.shields.io/badge/PATCH-ffffff?style=for-the-badge&color=5928ed)     | `/api/user/current/`             | Mise à jour des informations (nom d'utilisateur et email) de l'utilisateur connecté. (Route protégée par token.)                        |
 
 ## Routes Ressources
