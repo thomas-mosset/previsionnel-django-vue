@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import CategoryViewSet, IncomeViewSet, ExpenseViewSet, BudgetViewSet
+from .views import CategoryViewSet, IncomeViewSet, ExpenseViewSet, BudgetViewSet, LoggedInUserUpdateView
 
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet) # -> 'http://localhost:8000/api/categories/'
@@ -16,6 +16,7 @@ router.register(r'budgets', BudgetViewSet) # -> '/api/budgets/'
 urlpatterns = [
     path('', include(router.urls)),
     path('api/auth/', include('dj_rest_auth.urls')), # Default dj-rest-auth authentication routes
-    path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # Route to obtain a token
-    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # Route to refresh a token
+    path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # Route to obtain a token
+    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # Route to refresh a token
+    path('user/current/', LoggedInUserUpdateView.as_view(), name="user-update"), # Route (protected by a token) to update a logged in user -> will be "http://localhost:8000/api/user/current/" because of urlpatterns in back_previsionnel/urls.py (ne nedd to add another "api" here in the url)
 ]

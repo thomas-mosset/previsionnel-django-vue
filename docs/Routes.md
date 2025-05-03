@@ -13,6 +13,7 @@
 | ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)     | `/api/auth/email/verification/`             | Vérification de l'email de l'utilisateur.                         |
 | ![POST](https://img.shields.io/badge/POST-ffffff?style=for-the-badge&color=614e26)    | `/api/auth/token/refresh/`      | Rafraîchissement du token JWT avec un token de rafraîchissement.                |
 | ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)     | `/api/auth/user/`             | Récupération des informations de l'utilisateur connecté.                         |
+| ![PATCH](https://img.shields.io/badge/PATCH-ffffff?style=for-the-badge&color=5928ed)     | `/api/user/current/`             | Mise à jour des informations (nom d'utilisateur et email) de l'utilisateur connecté. (Route protégée par token.)                        |
 
 ## Routes Ressources
 

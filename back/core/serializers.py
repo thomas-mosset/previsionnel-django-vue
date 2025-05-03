@@ -1,4 +1,5 @@
 from rest_framework import serializers # A serializer is what transforms Python models to a JSON model for our API
+from django.contrib.auth import get_user_model
 from .models import Category, Income, Expense, Budget
 
 # inherits from serializers.ModelSerializer
@@ -32,3 +33,10 @@ class BudgetSerializer(serializers.ModelSerializer):
 # dj-rest-auth.registration already provides an /api/register/ route with a built-in serializer.
 # This serializer is internally called: dj_rest_auth.registration.serializers.RegisterSerializer
 # And it handles email, username, password1, and password2 (pwd confirmation), all ready to go.
+
+User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']

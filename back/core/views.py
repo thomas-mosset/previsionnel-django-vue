@@ -1,6 +1,8 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics, permissions
+from django.contrib.auth import get_user_model
+
 from .models import Category, Income, Expense, Budget
-from .serializers import CategorySerializer, IncomeSerializer, ExpenseSerializer, BudgetSerializer
+from .serializers import CategorySerializer, IncomeSerializer, ExpenseSerializer, BudgetSerializer, UserSerializer
 
 # each class will manage all actions (GET, POST, PUT, DELETE)
 
@@ -22,3 +24,14 @@ class ExpenseViewSet(viewsets.ModelViewSet):
 class BudgetViewSet(viewsets.ModelViewSet):
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
+
+User = get_user_model()
+class LoggedInUserUpdateView(generics.RetrieveUpdateAPIView):
+    """ view to get and update (PATCH / PUT) the current logged in user (email + username) """
+    """ a viewset is not secure, because any user could update another user's account + issue w/ the RGPD """
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # function that return the current logged in user
+        return self.request.user
