@@ -45,6 +45,10 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 REST_USE_JWT = True
 SITE_ID = 1
 
+DJREST_AUTH = {
+    'USE_JWT': True,
+}
+
 # Instead of sending a real email, Django will just print the contents of the email to the console. See example between the ''' mail '''
 # It's just for the prod /!\)
 # If we don't put it, the server tries to send a confirmation email through a SMTP server (that I don't have now)

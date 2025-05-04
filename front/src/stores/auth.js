@@ -10,10 +10,17 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
+    initialize() {
+      const tokenFromStorage = localStorage.getItem('token');
+      if (tokenFromStorage) {
+        this.token = tokenFromStorage;
+        this.isAuthenticated = true;
+      }
+    },
     async login(username, email, password) {
-
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/login/', {
+        const response = await axios.post('http://127.0.0.1:8000/api/auth/token/', { // to get token access + refresh
+        // const response = await axios.post('http://127.0.0.1:8000/api/auth/login/', { // here we only get the key
           username,
           email,
           password,
@@ -58,7 +65,7 @@ export const useAuthStore = defineStore('auth', {
         );
       }
     },
-    async logout(){
+    async logout() {
       console.log("logout auth");
 
       try {
@@ -73,5 +80,31 @@ export const useAuthStore = defineStore('auth', {
         throw new Error(error.response?.data?.detail || 'Erreur lors de la déconnexion.');
       }
     },
+    async updateUserInfo(newUsername, newEmail) {
+
+      try {
+        const response = await axios.put('http://127.0.0.1:8000/api/user/current/',
+          {
+            username: newUsername,
+            email: newEmail,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
+
+        // update the store w/ new infos
+        this.user = newUsername;
+        this.userEmail = newEmail;
+
+        return response.data;
+
+      } catch (error) {
+        console.log('Erreur lors de la mise à jour', error);
+        throw new Error('Erreur lors de la mise à jour des informations utilisateur');
+      }
+    }
   },
 })
