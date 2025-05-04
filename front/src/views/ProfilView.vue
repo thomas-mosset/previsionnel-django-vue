@@ -163,6 +163,9 @@
 
 import { computed, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const snackbar = ref(false); // vuetify element
 const snackbarMessage = ref(''); // vuetify element
@@ -267,9 +270,26 @@ const updatePWD = () => {
   // TODO
 };
 
-const deleteProfile = () => {
-  console.log("deleteProfile");
-  // TODO
+const deleteProfile = async () => {  
+  try {
+    await authStore.deleteUser();
+
+    snackbarMessage.value = "Compte supprimé avec succès.";
+    snackbarColor.value = "green-darken-4";
+    snackbar.value = true;
+
+    setTimeout(() => {
+      // Redirect to home page 3s later after successfull deletion
+      router.push('/');
+    }, 3000);
+
+  } catch (error) {
+    console.error('Erreur lors de la suppression du profil', error);
+
+    snackbarMessage.value = "Erreur lors de la suppression du compte.";
+    snackbarColor.value = "deep-orange-accent-4";
+    snackbar.value = true;
+  }
 };
 
 </script>

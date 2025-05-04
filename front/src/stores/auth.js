@@ -112,7 +112,6 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async updateUserInfo(newUsername, newEmail) {
-
       try {
         const response = await axiosAPI.put('/user/current/',
           {
@@ -136,6 +135,29 @@ export const useAuthStore = defineStore('auth', {
         console.log('Erreur lors de la mise à jour', error);
         throw new Error('Erreur lors de la mise à jour des informations utilisateur');
       }
-    }
+    },
+    async deleteUser() {
+      try {
+        await axiosAPI.delete('/user/current/delete', {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        // clean the store after deletion
+        this.token = null;
+        this.refreshToken = null;
+        this.user = null;
+        this.userEmail = null;
+        this.isAuthenticated = false;
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+
+      } catch (error) {
+        console.error('Erreur lors de la suppression du compte utilisateur', error);
+        throw new Error('La suppression du compte a échoué.');
+      }
+    },
   },
 })
