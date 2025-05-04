@@ -95,6 +95,47 @@
             </v-card>
           </v-col>
         </v-row>
+
+        <v-row class="my-16">
+          <v-col>
+            <v-sheet
+              class="d-flex align-center justify-center flex-wrap text-center mx-auto px-4"
+              elevation="8"
+              height="250"
+              max-width="800"
+              width="100%"
+              rounded
+            >
+              <div>
+                <h2 class="text-h4 font-weight-black">Paramètres</h2>
+
+                <div class="text-body-1-medium my-2">
+                 <p class="pb-2">Gérez votre compte utilisateur ici. <br /> Vous pouvez modifier votre mot de passe ou supprimer définitivement votre compte.</p>
+                </div>
+
+                <v-divider class="my-4"></v-divider>
+
+                <div class="d-flex flex-column flex-sm-row justify-space-between align-center pt-4">
+                  <v-btn
+                    color="orange"
+                    variant="outlined"
+                    @click="updatePWD"
+                  >
+                    Modifier mon mot de passe
+                  </v-btn>
+
+                  <v-btn
+                    color="deep-orange-accent-4"
+                    variant="outlined"
+                    @click="deleteProfile"
+                  >
+                    Supprimer mon compte
+                  </v-btn>
+                </div>
+              </div>
+            </v-sheet>
+          </v-col>
+        </v-row>
       </div>
 
       <!-- notifications for update -->
@@ -109,6 +150,9 @@
           <span class="text-center">{{ snackbarMessage }}</span>
         </v-row>
       </v-snackbar>
+
+
+      <!-- edit pwd + delete user profile -->
 
     </v-container>
   </main>
@@ -216,6 +260,16 @@ const cancelEdit = () => {
   editedUser.value = authStore.user;
   editedEmail.value = authStore.userEmail;
   isEditing.value = false;
+};
+
+const updatePWD = () => {
+  console.log("updatePWD");
+  // TODO
+};
+
+const deleteProfile = () => {
+  console.log("deleteProfile");
+  // TODO
 };
 
 </script>
