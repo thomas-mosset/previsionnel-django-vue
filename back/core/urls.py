@@ -1,4 +1,5 @@
 from django.urls import path, include
+from dj_rest_auth.views import PasswordChangeView
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import CategoryViewSet, IncomeViewSet, ExpenseViewSet, BudgetViewSet, LoggedInUserUpdateView, LoggedInUserDetailView, LoggedInUserDeleteView
@@ -21,4 +22,5 @@ urlpatterns = [
     path('user/current/', LoggedInUserUpdateView.as_view(), name="user-update"), # Route (protected by a token) to update a logged in user -> will be "http://localhost:8000/api/user/current/" because of urlpatterns in back_previsionnel/urls.py (no nedd to add another "api" here in the url)
     path('user/current/details/', LoggedInUserDetailView.as_view(), name="user-details"), # Route (protected by a token) to get a logged in user's details / info
     path('user/current/delete', LoggedInUserDeleteView.as_view(), name="user-delete"), # Route (protected by a token) to delete the current logged in user
+    path('auth/password/change/', PasswordChangeView.as_view(), name='password_change'),
 ]

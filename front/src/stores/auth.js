@@ -138,6 +138,24 @@ export const useAuthStore = defineStore('auth', {
         throw new Error('Erreur lors de la mise à jour des informations utilisateur');
       }
     },
+    async changeUserPassword (currentPassword, newPassword, newPasswordConfirmation) {
+      try {
+        const response = await axiosAPI.post('/auth/password/change/', {
+          old_password: currentPassword,
+          new_password1: newPassword,
+          new_password2 : newPasswordConfirmation,
+        }, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        return response.data;
+      } catch (error) {
+        console.error('Erreur lors du changement de mot de passe', error);
+        throw new Error(error.response?.data?.detail || "Impossible de changer le mot de passe.");
+      }
+    },
     async deleteUser() {
       try {
         await axiosAPI.delete('/user/current/delete', {

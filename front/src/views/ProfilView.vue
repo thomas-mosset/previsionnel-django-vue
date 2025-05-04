@@ -119,7 +119,7 @@
                   <v-btn
                     color="orange"
                     variant="outlined"
-                    @click="updatePWD"
+                    @click="updatePwdModal = true"
                   >
                     Modifier mon mot de passe
                   </v-btn>
@@ -177,6 +177,54 @@
         </v-card>
       </v-dialog>
 
+      <!-- update user password modal / dialog -->
+      <v-dialog v-model="updatePwdModal" max-width="600">
+        <v-card class="pa-4">
+          <v-card-title class="text-h4 font-weight-black text-center text-wrap">Changer le mot de passe</v-card-title>
+
+          <v-card-text class="mt-4">
+            <v-row justify="center">
+              <v-col class="mx-auto" cols="12" md="10">
+                <v-text-field
+                  label="Mot de passe actuel"
+                  type="password"
+                  v-model="currentPwd"
+                  :rules="[rules.required, rules.password]"
+                  required
+                ></v-text-field>
+                <v-text-field
+                  label="Nouveau mot de passe"
+                  type="password"
+                  v-model="newPwd"
+                  :rules="[rules.required, rules.password]"
+                  required
+                ></v-text-field>
+
+                <v-text-field
+                  label="Confirmer le nouveau mot de passe"
+                  type="password"
+                  v-model="newPwdConfirmation"
+                  :rules="[rules.required, rules.password]"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+
+          </v-card-text>
+
+          <v-card-actions class="d-flex justify-end">
+            <v-btn text @click="updatePwdModal = false">Annuler</v-btn>
+            <v-btn
+              color="grey-darken-4"
+              variant="flat"
+              @click="handleUpdatePwdConfirmation"
+            >
+              Mettre à jour
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
     </v-container>
   </main>
 </template>
@@ -195,6 +243,7 @@ const snackbarMessage = ref(''); // vuetify element
 const snackbarColor = ref('');
 
 const confirmDeleteModal = ref(false);
+const updatePwdModal = ref(false);
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
@@ -204,9 +253,20 @@ const isEditing = ref(false);
 const editedUser = ref(authStore.user);
 const editedEmail = ref(authStore.userEmail);
 
+const currentPwd = ref("");
+const newPwd = ref("");
+const newPwdConfirmation = ref("");
+
 const rules = {
   required: (v) => !!v || 'Champ requis',
   email: (v) => /.+@.+\..+/.test(v) || 'Email invalide',
+  password: (v) => {
+    if (!v) return 'Mot de passe requis';
+    // check password complexity : 
+    // at least 8 chars long, 1 letter, 1 number, et 1 special char
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(v) || 'Le mot de passe doit contenir au moins 8 caractères, une lettre, un chiffre et un caractère spécial';
+  }
 }
 
 const cardsInfos = [
@@ -290,9 +350,51 @@ const cancelEdit = () => {
   isEditing.value = false;
 };
 
-const updatePWD = () => {
-  console.log("updatePWD");
-  // TODO
+const handleUpdatePwdConfirmation = async () => {
+  await updatePWD();
+};
+
+const updatePWD = async () => {  
+  if (!currentPwd.value || !newPwd.value || !newPwdConfirmation.value) {
+    snackbarMessage.value = "Tous les champs sont requis.";
+    snackbarColor.value = "deep-orange-accent-4";
+    snackbar.value = true;
+
+    return;
+  }
+
+  if (!currentPwd.value === (!newPwd.value || !newPwdConfirmation.value)) {
+    snackbarMessage.value = "Le nouveau mot de passe ne peut être identique à l'ancien.";
+    snackbarColor.value = "deep-orange-accent-4";
+    snackbar.value = true;
+
+    return;
+  }
+
+  if (newPwd.value !== newPwdConfirmation.value) {
+    snackbarMessage.value = "Les nouveaux mots de passe ne correspondent pas.";
+    snackbarColor.value = "deep-orange-accent-4";
+    snackbar.value = true;
+
+    return;
+  }
+
+  try {
+    await authStore.changeUserPassword(currentPwd.value, newPwd.value, newPwdConfirmation.value);
+
+    snackbarMessage.value = "Mot de passe mis à jour avec succès.";
+    snackbarColor.value = "green-darken-4";
+    snackbar.value = true;
+
+    updatePwdModal.value = false; // close modale / dialog
+
+  } catch (error) {
+    snackbarMessage.value = error.message || "Erreur lors de la mise à jour du mot de passe.";
+    snackbarColor.value = "deep-orange-accent-4";
+    snackbar.value = true;
+
+    updatePwdModal.value = false; // close modale / dialog
+  }
 };
 
 const handleDeleteConfirmation = async () => {
