@@ -127,7 +127,7 @@
                   <v-btn
                     color="deep-orange-accent-4"
                     variant="outlined"
-                    @click="deleteProfile"
+                    @click="confirmDeleteModal = true"
                   >
                     Supprimer mon compte
                   </v-btn>
@@ -152,7 +152,30 @@
       </v-snackbar>
 
 
-      <!-- edit pwd + delete user profile -->
+      <!-- delete user profile modal / dialog -->
+      <v-dialog v-model="confirmDeleteModal" max-width="500">
+        <v-card class="pa-4">
+          <v-card-title class="text-h4 font-weight-black text-center">Confirmation</v-card-title>
+
+          <v-card-text>
+            Êtes-vous sûr de vouloir <strong>supprimer définitivement</strong> votre compte ?
+          </v-card-text>
+          <v-card-text>
+            Cette action est <span class="text-deep-orange-accent-4 font-weight-bold">irréversible</span> !
+          </v-card-text>
+
+          <v-card-actions class="d-flex justify-end">
+            <v-btn text @click="confirmDeleteModal = false">Annuler</v-btn>
+            <v-btn
+              color="deep-orange-accent-4"
+              variant="flat"
+              @click="handleDeleteConfirmation"
+            >
+              Oui, supprimer
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
     </v-container>
   </main>
@@ -170,6 +193,8 @@ const router = useRouter()
 const snackbar = ref(false); // vuetify element
 const snackbarMessage = ref(''); // vuetify element
 const snackbarColor = ref('');
+
+const confirmDeleteModal = ref(false);
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
@@ -268,6 +293,11 @@ const cancelEdit = () => {
 const updatePWD = () => {
   console.log("updatePWD");
   // TODO
+};
+
+const handleDeleteConfirmation = async () => {
+  await deleteProfile();
+  confirmDeleteModal.value = false;
 };
 
 const deleteProfile = async () => {  

@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true;
       }
     },
-    async refreshToken() {
+    async refreshAccessToken() {
       const refresh = this.refreshToken || localStorage.getItem('refreshToken');
 
       if (!refresh) {
@@ -94,10 +94,12 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async logout() {
-      console.log("logout auth");
-
       try {
-        await axiosAPI.post('/auth/logout/');
+        await axiosAPI.post('/auth/logout/', null, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
         this.token = null;
         this.refreshToken = null;

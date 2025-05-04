@@ -40,8 +40,8 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                // get the new token (here the refresh token) from the refreshToken method present in our Pinia store
-                await authStore.refreshToken();
+                // get the new token (here the refresh token) from the refreshAccessToken method present in our Pinia store
+                await authStore.refreshAccessToken();
                 // if it's a success, we update the header Authorization from our initial request
                 originalRequest.headers.Authorization = `Bearer ${authStore.token}`;
 
