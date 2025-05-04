@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+// import axios from 'axios' -> is replaced by axiosAPI from my service
+import axiosAPI from '@/services/axiosInstance';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     userEmail: null,
     token: null,
+    refreshToken: null,
     isAuthenticated: false,
   }),
 
@@ -17,9 +19,31 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true;
       }
     },
+    async refreshToken() {
+      const refresh = this.refreshToken || localStorage.getItem('refreshToken');
+
+      if (!refresh) {
+        throw new Error("Pas de refresh token");
+      }
+
+      try {
+        const response = await axiosAPI.post('/auth/token/refresh/', {
+          refresh,
+        });
+
+        this.token = response.data.access;
+        localStorage.setItem('token', this.token);
+
+      } catch (error) {
+        console.log(error);
+
+        this.logout();
+        throw new Error("Échec du rafraichissement du token");
+      }
+    },
     async login(username, email, password) {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/token/', { // to get token access + refresh
+        const response = await axiosAPI.post('/auth/token/', { // to get token access + refresh
         // const response = await axios.post('http://127.0.0.1:8000/api/auth/login/', { // here we only get the key
           username,
           email,
@@ -27,11 +51,13 @@ export const useAuthStore = defineStore('auth', {
         })
 
         this.token = response.data.access;
+        this.refreshToken = response.data.refresh;
         this.user = username;
         this.userEmail = email;
         this.isAuthenticated = true;
 
         localStorage.setItem('token', this.token)
+        localStorage.setItem('refreshToken', this.refreshToken); // to get a refresh token if first one expire before the end orf the user's session
 
       } catch (error) {
         console.log('catch error', error.response?.data?.detail);
@@ -41,7 +67,7 @@ export const useAuthStore = defineStore('auth', {
     },
     async registration(username, email, password, passwordConfirmation) {      
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/registration/', {
+        const response = await axiosAPI.post('/auth/registration/', {
           username,
           email,
           password1: password, /* "password1" is the name of the Django field */
@@ -49,11 +75,13 @@ export const useAuthStore = defineStore('auth', {
         });
 
         this.token = response.data.access;
+        this.refreshToken = response.data.refresh;
         this.user = username;
         this.userEmail = email;
         this.isAuthenticated = true;
 
-        localStorage.setItem('token', this.token);
+        localStorage.setItem('token', this.token)
+        localStorage.setItem('refreshToken', this.refreshToken);
 
       } catch (error) {
         console.log('Full error response:', error.response?.data || error.message);
@@ -69,11 +97,14 @@ export const useAuthStore = defineStore('auth', {
       console.log("logout auth");
 
       try {
-        await axios.post('http://127.0.0.1:8000/api/auth/logout/');
+        await axiosAPI.post('/auth/logout/');
 
         this.token = null;
+        this.refreshToken = null;
         this.isAuthenticated = false;
+
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
       } catch (error) {
         console.log('catch error', error.response?.data?.detail);
 
@@ -83,7 +114,7 @@ export const useAuthStore = defineStore('auth', {
     async updateUserInfo(newUsername, newEmail) {
 
       try {
-        const response = await axios.put('http://127.0.0.1:8000/api/user/current/',
+        const response = await axiosAPI.put('/user/current/',
           {
             username: newUsername,
             email: newEmail,
