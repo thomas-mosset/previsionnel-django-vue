@@ -81,6 +81,7 @@ const translateError = (message) => {
     "The two password fields didn't match.": "Les deux mots de passe ne correspondent pas.",
     "This password is too short. It must contain at least 8 characters.": "Ce mot de passe est trop court. Il doit contenir au moins 8 caractères.",
     "This field may not be blank.": "Ce champ ne peut pas être vide.",
+    "No active account found with the given credentials": "Aucun compte actif trouvé avec les informations d'identification fournies",
   }
 
   return translations[message] || message
@@ -95,7 +96,6 @@ const handleRegistration = async () => {
     // Redirect to profil page after successfull login
     router.push('/profil')
   } catch (err) {
-    console.log("coucou", err.message);
     error.value = translateError(err.message);
   }
 }

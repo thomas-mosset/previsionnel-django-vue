@@ -14,8 +14,11 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     initialize() {
       const tokenFromStorage = localStorage.getItem('token');
+      const refreshTokenFromStorage = localStorage.getItem('token');
+
       if (tokenFromStorage) {
         this.token = tokenFromStorage;
+        this.refreshToken = refreshTokenFromStorage;
         this.isAuthenticated = true;
       }
     },
@@ -32,6 +35,13 @@ export const useAuthStore = defineStore('auth', {
         });
 
         this.token = response.data.access;
+
+        if (response.data.refresh) {
+          this.refreshToken = response.data.refresh;
+          localStorage.setItem('refreshToken', this.refreshToken);
+        }
+
+
         localStorage.setItem('token', this.token);
 
       } catch (error) {
@@ -74,10 +84,17 @@ export const useAuthStore = defineStore('auth', {
           password2: passwordConfirmation /* "password2" is the name of the Django field */
         });
 
-        this.token = response.data.access;
-        this.refreshToken = response.data.refresh;
-        this.user = username;
-        this.userEmail = email;
+        // second API call is made to get the acess + refresh token nedded to update / logout user
+        const tokenResponse = await axiosAPI.post('/auth/token/', {
+          username,
+          email,
+          password,
+        })
+
+        this.token = tokenResponse.data.access;
+        this.refreshToken = tokenResponse.data.refresh;
+        this.user = response.username;
+        this.userEmail = response.email;
         this.isAuthenticated = true;
 
         localStorage.setItem('token', this.token)
@@ -86,6 +103,7 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.log('Full error response:', error.response?.data || error.message);
         throw new Error(
+          error.response?.data?.username?.[0] ||
           error.response?.data?.email?.[0] ||
           error.response?.data?.password1?.[0] ||
           error.response?.data?.non_field_errors?.[0] ||
