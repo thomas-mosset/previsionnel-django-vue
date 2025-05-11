@@ -74,6 +74,18 @@ const rules = {
   username: (v) => /^[a-zA-Z0-9_]+$/.test(v) || "Nom d'utilisateur invalide (lettres, chiffres, underscores uniquement)",
 }
 
+const translateError = (message) => {
+  const translations = {
+    "A user with that username already exists.": "Un utilisateur avec ce nom existe déjà.",
+    "Enter a valid email address.": "Entrez une adresse e-mail valide.",
+    "The two password fields didn't match.": "Les deux mots de passe ne correspondent pas.",
+    "This password is too short. It must contain at least 8 characters.": "Ce mot de passe est trop court. Il doit contenir au moins 8 caractères.",
+    "This field may not be blank.": "Ce champ ne peut pas être vide.",
+  }
+
+  return translations[message] || message
+}
+
 const handleRegistration = async () => {
   error.value = null
 
@@ -83,7 +95,8 @@ const handleRegistration = async () => {
     // Redirect to profil page after successfull login
     router.push('/profil')
   } catch (err) {
-    error.value = err.message ;
+    console.log("coucou", err.message);
+    error.value = translateError(err.message);
   }
 }
 
