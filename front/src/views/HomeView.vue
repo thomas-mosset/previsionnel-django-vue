@@ -8,9 +8,12 @@
         </v-col>
       </v-row>
      
-      <v-row class="d-flex justify-center">
-        <v-col cols="12" md="5">
-          <v-card text="Pour lancer votre prévisionnel ou y accéder, connectez-vous." variant="outlined">
+      <v-row class="d-flex justify-center align-stretch">
+        <v-col cols="12" md="5" class="d-flex">
+          <v-card class="flex-grow-1 d-flex flex-column" variant="outlined">
+            <v-card-text class="flex-grow-1">
+              Pour lancer votre prévisionnel ou y accéder, connectez-vous.
+            </v-card-text>
             <v-card-actions>
               <RouterLink to="/login">
                 <v-btn variant="tonal" color="grey-darken-4">Se connecter</v-btn>
@@ -19,8 +22,11 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" md="5">
-          <v-card text="Pour créer votre prévisionnel, enregistrez-vous." variant="outlined">
+        <v-col cols="12" md="5" class="d-flex">
+          <v-card class="flex-grow-1 d-flex flex-column" variant="outlined">
+            <v-card-text class="flex-grow-1">
+              Pour créer votre prévisionnel, enregistrez-vous.
+            </v-card-text>
             <v-card-actions>
               <RouterLink to="/registration">
                 <v-btn variant="tonal" color="grey-darken-4">Créer un compte</v-btn>
