@@ -10,9 +10,17 @@ from .serializers import CategorySerializer, IncomeSerializer, ExpenseSerializer
 # each class will manage all actions (GET, POST, PUT, DELETE)
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all() # will need to work with all existing categories
+    # queryset = Category.objects.all() # any logged in user can access all categories
+    queryset = Category.objects.none()
     serializer_class = CategorySerializer # which serializer to use to convert python object into JSON
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return Category.objects.filter(user=self.request.user) # to get only the categories related to the logged in user
+
+    # when creating a new cat, we won't need to add the user, it will be automatically be done by django w/ this function
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class IncomeViewSet(viewsets.ModelViewSet):
     queryset = Income.objects.all()

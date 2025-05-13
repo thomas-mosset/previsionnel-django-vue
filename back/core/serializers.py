@@ -5,6 +5,8 @@ from .models import Category, Income, Expense, Budget
 # inherits from serializers.ModelSerializer
 # it is directly linked to the Category model (so no needs to rewrite everything)
 class CategorySerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    
     # Meta is an internal special class where we give info to the serializer
     class Meta:
         model = Category # this serializer is for the Category model
