@@ -30,6 +30,8 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
 
 class BudgetSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    
     class Meta:
         model = Budget
         fields = ['id', 'user', 'category', 'amount', 'month', 'year']

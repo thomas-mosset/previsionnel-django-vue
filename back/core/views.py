@@ -50,8 +50,15 @@ class ExpenseViewSet(viewsets.ModelViewSet):
 
 
 class BudgetViewSet(viewsets.ModelViewSet):
-    queryset = Budget.objects.all()
+    # queryset = Budget.objects.all()
+    queryset = Budget.objects.none()
     serializer_class = BudgetSerializer
+
+    def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 User = get_user_model()
 class LoggedInUserUpdateView(generics.RetrieveUpdateAPIView):
