@@ -23,8 +23,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class IncomeViewSet(viewsets.ModelViewSet):
-    queryset = Income.objects.all()
+    # queryset = Income.objects.all()
+    queryset = Income.objects.none()
     serializer_class = IncomeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Income.objects.filter(user=self.request.user)
+    
+    
+    # Automatically associates income with the logged in user
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class ExpenseViewSet(viewsets.ModelViewSet):
