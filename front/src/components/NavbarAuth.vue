@@ -85,10 +85,10 @@ const authStore = useAuthStore();
 
 const navItems = [
   { text: 'Dashboard', link: '/profil' },
-  { text: 'Revenus', link: '/incomes' },
-  { text: 'Dépenses', link: '/expenses' },
-  { text: 'Budgets', link: '/budgets' },
-  { text: 'Catégories', link: '/categories' },
+  { text: 'Revenus', link: '/profil/incomes' },
+  { text: 'Dépenses', link: '/profil/expenses' },
+  { text: 'Budgets', link: '/profil/budgets' },
+  { text: 'Catégories', link: '/profil/categories' },
   { text: 'Se déconnecter', link: '/logout' },
 ]
 
