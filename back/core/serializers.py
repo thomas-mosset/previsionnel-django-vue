@@ -15,13 +15,15 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class IncomeSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    
+
     class Meta:
         model = Income
         fields = ['id', 'user', 'category', 'amount', 'date', 'description']
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Expense
         fields = ['id', 'user', 'category', 'amount', 'date', 'description']

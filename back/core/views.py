@@ -38,8 +38,15 @@ class IncomeViewSet(viewsets.ModelViewSet):
 
 
 class ExpenseViewSet(viewsets.ModelViewSet):
-    queryset = Expense.objects.all()
+    # queryset = Expense.objects.all()
+    queryset = Expense.objects.none()
     serializer_class = ExpenseSerializer
+
+    def get_queryset(self):
+        return Expense.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class BudgetViewSet(viewsets.ModelViewSet):
