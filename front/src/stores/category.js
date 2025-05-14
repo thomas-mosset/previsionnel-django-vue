@@ -24,11 +24,44 @@ export const useCategoryStore = defineStore('category', {
                 this.loading = false;
             }
         },
+        async updateCategory(id, newCategoryName, newCategoryType) {
+            try {
+                const authStore = useAuthStore();
+                let token = authStore.token;
+                const refreshToken = authStore.refreshAccessToken;
+
+                if (!token) {
+                    if (refreshToken) {
+                        await authStore.refreshAccessToken();
+                        token = authStore.token;
+                    } else {
+                        throw new Error('Token non trouvé. Veuillez vous reconnecter.');
+                    }
+                }
+
+                await axiosAPI.put(`/categories/${id}/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    name: newCategoryName,
+                    type: newCategoryType,
+                })
+
+                const updatedCategory = this.categories.find(category => category.id === id);
+
+                updatedCategory.name = newCategoryName;
+                updatedCategory.type = newCategoryType;
+
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de la catégorie', error);
+                throw new Error('La mise à jour de la catégorie a échoué.');
+            }
+        },
         async deleteCategory(id) {
             try {
                 const authStore = useAuthStore();
                 let token = authStore.token;
-                let refreshToken = authStore.refreshToken;
+                const refreshToken = authStore.refreshToken;
 
                 // if we don't find the token
                 if (!token) {
