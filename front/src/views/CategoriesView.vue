@@ -17,16 +17,16 @@
         </v-row>
 
         <v-row>
-          <div v-if="categoryStore.loading">
-            <p class="text-center">Chargement...</p>
+          <div v-if="categoryStore.loading" class="w-100 text-center">
+            <p>Chargement...</p>
           </div>
 
-          <div v-else-if="categoryStore.error">
-            <p class="text-center">{{ categoryStore.error }}</p>
+          <div v-else-if="categoryStore.error" class="w-100 text-center">
+            <p>{{ categoryStore.error }}</p>
           </div>
 
-          <div v-else-if="categories.length === 0">
-            <p class="text-center">Vous n'avez pas encore de catégorie.</p>
+          <div v-else-if="categoryStore.categories.length === 0" class="w-100 text-center">
+            <p>Vous n'avez pas encore de catégorie.</p>
           </div>
 
           <v-data-table
@@ -52,8 +52,19 @@
               </tr>
             </template>
           </v-data-table>
-
         </v-row>
+
+      <v-snackbar
+        v-model="snackbar"
+        :timeout="3000"
+        :color="snackbarColor"
+        elevation="8"
+        location="top"
+      >
+        <v-row class="justify-center">
+          <span class="text-center">{{ snackbarMessage }}</span>
+        </v-row>
+      </v-snackbar>
 
       </div>
     </v-container>
@@ -70,8 +81,11 @@ const authStore = useAuthStore();
 const isAuthenticated = authStore.isAuthenticated;
 
 const categoryStore = useCategoryStore()
+const categories = computed(() => categoryStore.categories);
 
-const categories = categoryStore.categories;
+const snackbar = ref(false); // vuetify element
+const snackbarMessage = ref(''); // vuetify element
+const snackbarColor = ref('');
 
 onMounted(() => {
   authStore.initialize();
@@ -85,7 +99,7 @@ const headers = ref([
   ])
 
 const translatedCategories = computed(() => {
-  return categories.map(category => {
+  return categories.value.map(category => {
     return {
       ...category,
       type: category.type === 'EXPENSE' ? 'Dépense' : category.type === 'INCOME' ? 'Revenu' : category.type
@@ -98,9 +112,23 @@ function editCategory(category) {
   console.log('Éditer :', category);
 }
 
-function deleteCategory(id) {
-  // TODO in pinia
-  console.log('Suppression :', id);
+const deleteCategory = async (id) => {
+  try {
+    // delete category
+    await categoryStore.deleteCategory(id);
+
+    // msg for the user via snackbar
+    snackbarMessage.value = "Catégorie supprimée avec succès.";
+    snackbarColor.value = "green-darken-4";
+    snackbar.value = true;
+
+  } catch (error) {
+  console.error('Erreur lors de la suppression de la catégorie', error);
+
+  snackbarMessage.value = "Erreur lors de la suppression de la catégorie.";
+  snackbarColor.value = "deep-orange-accent-4";
+  snackbar.value = true;
+  }
 }
 
 </script>
