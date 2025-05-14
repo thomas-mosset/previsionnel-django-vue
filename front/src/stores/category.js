@@ -24,11 +24,42 @@ export const useCategoryStore = defineStore('category', {
                 this.loading = false;
             }
         },
+        async addCategory (categoryName, categoryType) {
+            try {
+                const authStore = useAuthStore();
+                let token = authStore.token;
+                const refreshToken = authStore.refreshToken;
+
+                if (!token) {
+                    if (refreshToken) {
+                        await authStore.refreshAccessToken();
+                        token = authStore.token;
+                    } else {
+                        throw new Error('Token non trouvé. Veuillez vous reconnecter.');
+                    }
+                }
+
+                const response = await axiosAPI.post('/categories/', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    name: categoryName,
+                    type: categoryType,
+                });
+
+                // update locally the categories array
+                this.categories.push(response.data);
+
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout de la catégorie', error);
+                throw new Error('L\'ajout de la catégorie a échoué.'); 
+            }
+        },
         async updateCategory(id, newCategoryName, newCategoryType) {
             try {
                 const authStore = useAuthStore();
                 let token = authStore.token;
-                const refreshToken = authStore.refreshAccessToken;
+                const refreshToken = authStore.refreshToken;
 
                 if (!token) {
                     if (refreshToken) {

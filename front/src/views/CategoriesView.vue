@@ -16,6 +16,44 @@
           </v-col>
         </v-row>
 
+        <!-- ADD FORM -->
+        <v-row v-if="!categoryStore.loading" class="mb-16">
+          <v-col cols="12">
+            <v-form ref="formRef" v-model="valid" class="d-flex align-center gap-4" @submit.prevent="handleSubmit">
+              <v-text-field
+                v-model="name"
+                label="Nom"
+                :rules="[rules.required, rules.name]"
+                dense
+                hide-details="auto"
+                class="w-20 mr-2"
+              ></v-text-field>
+
+              <v-select
+                v-model="type"
+                :items="typeOptions"
+                label="Type"
+                :rules="[rules.required]"
+                no-data-text="Aucune donnée disponible"
+                dense
+                hide-details="auto"
+                class="w-20 mr-2"
+              ></v-select>
+
+              <v-btn
+                type="submit"
+                variant="tonal"
+                color="grey-darken-4"
+                :disabled="!valid"
+              >
+                Ajouter
+              </v-btn>
+
+              <v-alert v-if="error" type="error" class="mt-12 text-center">{{ error }}</v-alert>
+            </v-form>
+          </v-col>
+        </v-row>
+
         <v-row>
           <div v-if="categoryStore.loading" class="w-100 text-center">
             <p>Chargement...</p>
@@ -61,8 +99,9 @@
                     {{ item.type }}
                   </div>
                 </td>
-
+                
                 <td>
+                  <!-- EDIT MODE -->
                   <div v-if="editingCategoryId === item.id">
                     <v-btn @click="saveEditedCategory" class="mx-1">
                       <v-icon color="green-darken-4" icon="mdi-check"></v-icon>
@@ -73,6 +112,7 @@
                     </v-btn>
                   </div>
 
+                  <!-- DISPLAY MODE -->
                   <div v-else>
                     <v-btn @click="editCategory(item)" class="mx-1">
                       <v-icon color="warning" icon="mdi-pencil"></v-icon>
@@ -122,10 +162,23 @@ const snackbar = ref(false); // vuetify element
 const snackbarMessage = ref(''); // vuetify element
 const snackbarColor = ref('');
 
+// add form
+const name = ref('');
+const type = ref('');
+const valid = ref(false)
+const error = ref(null)
+const typeOptions = ['Dépense', 'Revenu'];
+
+// validation add form
+const rules = {
+  required: (v) => !!v || 'Champ requis',
+  name: (v) => /^[a-zA-Z0-9_]+$/.test(v.length >= 3) || "Minimum 3 caractères",
+}
+
+// edit mode
 const editingCategoryId = ref(null);
 const editedName = ref('');
 const editedType = ref('');
-
 
 onMounted(() => {
   authStore.initialize();
@@ -147,9 +200,38 @@ const translatedCategories = computed(() => {
   });
 });
 
-function editCategory(category) {
-  console.log("editCategory", category);
+const handleSubmit = async () => {
+  error.value = null
 
+  if (type.value === "Dépense") {
+    type.value = "EXPENSE";
+  } else if (type.value === "Revenu") {
+    type.value = "INCOME";
+  }
+
+  try {
+    await categoryStore.addCategory(name.value, type.value);
+
+    snackbarMessage.value = 'Catégorie ajoutée !';
+    snackbarColor.value = 'green-darken-4';
+    snackbar.value = true;
+
+    // Reset form
+    setTimeout(() => {
+      name.value = '';
+      type.value = '';
+    }, 3000);
+
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout de la catégorie', error);
+
+    snackbarMessage.value = "Erreur lors de l'ajout.";
+    snackbarColor.value = 'deep-orange-accent-4';
+    snackbar.value = true;
+  }
+};
+
+function editCategory(category) {
   editingCategoryId.value = category.id;
   editedName.value = category.name;
   editedType.value = category.type;
