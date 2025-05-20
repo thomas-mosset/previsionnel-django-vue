@@ -187,7 +187,7 @@
                                             <v-icon color="warning" icon="mdi-pencil"></v-icon>
                                         </v-btn>
 
-                                        <v-btn class="ma-1">
+                                        <v-btn @click="deleteIncome(item.id)" class="ma-1">
                                             <v-icon color="red" icon="mdi-delete"></v-icon>
                                         </v-btn>
                                     </div>
@@ -354,6 +354,23 @@ const saveEditedIncome = async () => {
         snackbarMessage.value = 'Erreur lors de la mise à jour.';
         snackbarColor.value = 'deep-orange-accent-4';
         snackbar.value = true;  
+    }
+};
+
+const deleteIncome = async (id) => {
+    try {
+        await incomeStore.deleteIncome(id);
+
+        snackbarMessage.value = "Revenu supprimé avec succès.";
+        snackbarColor.value = "green-darken-4";
+        snackbar.value = true;
+
+    } catch (error) {
+        console.error('Erreur lors de la suppression du revenu', error);
+
+        snackbarMessage.value = "Erreur lors de la suppression du revenu.";
+        snackbarColor.value = "deep-orange-accent-4";
+        snackbar.value = true;
     }
 };
 

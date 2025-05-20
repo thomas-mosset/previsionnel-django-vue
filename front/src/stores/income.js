@@ -98,5 +98,36 @@ export const useIncomeStore = defineStore('income', {
                 throw new Error('La mise à jour du revenu a échoué.');
             }
         },
+        async deleteIncome(id) {
+            try {
+                const authStore = useAuthStore();
+                let token = authStore.token;
+                const refreshToken = authStore.refreshToken;
+
+                // if we don't find the token
+                if (!token) {
+                    // we use the refresh token...
+                    if (refreshToken) {
+                        // to refresh the access token
+                        await authStore.refreshAccessToken();
+                        token = authStore.token;  // get the new access token
+                    } else {
+                        throw new Error('Token non trouvé. Veuillez vous reconnecter.');
+                    }
+                }
+
+                await axiosAPI.delete(`/incomes/${id}/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+
+                this.incomes = this.incomes.filter(income => income.id !== id);
+
+            } catch (error) {
+                 console.error('Erreur lors de la suppression du revenu', error);
+                throw new Error('La suppression du revenu a échoué.');
+            }
+        },
     },
 })
