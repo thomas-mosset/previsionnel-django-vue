@@ -133,6 +133,19 @@
                         </template>
                     </v-data-table>
                 </v-row>
+
+                <v-snackbar
+                    v-model="snackbar"
+                    :timeout="3000"
+                    :color="snackbarColor"
+                    elevation="8"
+                    location="top"
+                >
+                    <v-row class="justify-center">
+                    <span class="text-center">{{ snackbarMessage }}</span>
+                    </v-row>
+                </v-snackbar>
+
             </div>
         </v-container>
     </main>
@@ -151,6 +164,10 @@ const categoryStore = useCategoryStore();
 const categories = categoryStore.categories;
 
 const incomeStore = useIncomeStore();
+
+const snackbar = ref(false); // vuetify element
+const snackbarMessage = ref(''); // vuetify element
+const snackbarColor = ref('');
 
 // add form
 const valid = ref(false)
@@ -212,11 +229,32 @@ const incomeTypeCategories = computed(() => {
 });
 
 const handleSubmit = async () => {
-    console.log("handleSubmit");
+    console.log("handleSubmit", date.value, description.value, category, amount.value);
 
     error.value = null
 
-    // TODO
+    try {
+        await incomeStore.addIncome(category.value, amount.value, date.value, description.value);
+
+        snackbarMessage.value = 'Revenu ajouté !';
+        snackbarColor.value = 'green-darken-4';
+        snackbar.value = true;
+
+        // Reset form
+        setTimeout(() => {
+            date.value = '';
+            description.value = null;
+            category.value = '';
+            amount.value = null;
+        }, 3000);
+
+    } catch (error) {
+        console.error('Erreur lors de l\'ajout du revenu', error);
+
+        snackbarMessage.value = "Erreur lors de l'ajout.";
+        snackbarColor.value = 'deep-orange-accent-4';
+        snackbar.value = true;
+    }
 };
 
 </script>
