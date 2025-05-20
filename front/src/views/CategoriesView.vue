@@ -256,7 +256,7 @@ const saveEditedCategory = async () => {
     editingCategoryId.value = null;
 
   } catch (error) {
-    console.error('Erreur lors de la suppression de la catégorie', error);
+    console.error('Erreur lors de la mise à jour de la catégorie', error);
 
     snackbarMessage.value = 'Erreur lors de la mise à jour.';
     snackbarColor.value = 'deep-orange-accent-4';

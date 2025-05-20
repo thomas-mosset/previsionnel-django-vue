@@ -56,5 +56,47 @@ export const useIncomeStore = defineStore('income', {
                 throw new Error('L\'ajout du revenu a échoué.');  
             }
         },
+        async updateIncome(id, newIncomeCategory, newIncomeAmount, newIncomeDate, newIncomeDescription) {
+            try {
+                const authStore = useAuthStore();
+                let token = authStore.token;
+                const refreshToken = authStore.refreshToken;
+
+                if(!token) {
+                    if (refreshToken) {
+                        await authStore.refreshAccessToken();
+                        token = authStore.token;
+                    } else {
+                        throw new Error('Token non trouvé. Veuillez vous reconnecter.');
+                    }
+                }
+
+                await axiosAPI.put(
+                    `/incomes/${id}/`,
+                    {
+                        category: newIncomeCategory,
+                        amount: newIncomeAmount,
+                        date: newIncomeDate,
+                        description: newIncomeDescription,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                const updatedIncome = this.incomes.find(income => income.id === id);
+
+                updatedIncome.category = newIncomeCategory;
+                updatedIncome.amount = newIncomeAmount;
+                updatedIncome.date = newIncomeDate;
+                updatedIncome.description = newIncomeDescription;
+                
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour du revenu', error.response?.data || error.message);
+                throw new Error('La mise à jour du revenu a échoué.');
+            }
+        },
     },
 })

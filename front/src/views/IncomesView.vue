@@ -104,31 +104,96 @@
                         <template v-slot:item="{ item }">
                             <tr>
                                 <td>
-                                    <div>
+                                    <div v-if="editingIncomeId === item.id">
+                                        <v-text-field
+                                            class="mx-1"
+                                            v-model="editedDate"
+                                            label="Date"
+                                            type="date"
+                                            hide-details
+                                        ></v-text-field>
+                                    </div>
+                                    <div v-else>
                                         {{ formatDate(item.date) }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div v-if="item.description">
-                                        {{ item.description }}
+                                    <div v-if="editingIncomeId === item.id">
+                                        <v-text-field v-model="editedDescription" hide-details />
                                     </div>
+
                                     <div v-else>
-                                        Pas de description disponible
+                                        <div v-if="item.description">
+                                            {{ item.description }}
+                                        </div>
+                                        <div v-else>
+                                            Pas de description disponible
+                                        </div>
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
+                                    <div v-if="editingIncomeId === item.id">
+                                        <v-select
+                                            class="mx-1"
+                                            label="Catégorie"
+                                            v-model="editedCategory"
+                                            :items="incomeTypeCategories"
+                                            item-title="name"
+                                            item-value="id"
+                                            no-data-text="Aucune donnée disponible"
+                                            hide-details
+                                        ></v-select>
+                                    </div>
+
+                                    <div v-else>
                                         {{ item.category }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
+                                    <div v-if="editingIncomeId === item.id" class="my-2">
+                                        <v-number-input
+                                            class="mx-1"
+                                            label="Montant"
+                                            :min="1"
+                                            v-model="editedAmount"
+                                            hide-details
+                                        ></v-number-input>
+                                    </div>
+
+                                    <div v-else>
                                         {{ item.amount }} €
                                     </div>
                                 </td>
+
+
+                                <td>
+                                    <!-- EDIT MODE -->
+                                    <div v-if="editingIncomeId === item.id">
+                                        <v-btn @click="saveEditedIncome" class="mx-1">
+                                            <v-icon color="green-darken-4" icon="mdi-check"></v-icon>
+                                        </v-btn>
+
+                                        <v-btn @click="editingIncomeId = null" class="mx-1">
+                                            <v-icon color="grey-darken-4 " icon="mdi-close"></v-icon>
+                                        </v-btn>
+                                    </div>
+
+                                    <!-- DISPLAY MODE -->
+                                    <div v-else>
+                                        <v-btn @click="editIncome(item)" class="mx-1">
+                                            <v-icon color="warning" icon="mdi-pencil"></v-icon>
+                                        </v-btn>
+
+                                        <v-btn class="ma-1">
+                                            <v-icon color="red" icon="mdi-delete"></v-icon>
+                                        </v-btn>
+                                    </div>
+                                </td>
+
+
                             </tr>
                         </template>
                     </v-data-table>
@@ -161,7 +226,7 @@ const authStore = useAuthStore();
 const isAuthenticated = authStore.isAuthenticated;
 
 const categoryStore = useCategoryStore();
-const categories = categoryStore.categories;
+const categories = computed(() => categoryStore.categories);
 
 const incomeStore = useIncomeStore();
 
@@ -176,6 +241,13 @@ const date = ref('');
 const description = ref(null);
 const category = ref('');
 const amount = ref();
+
+// edit mode
+const editingIncomeId = ref(null);
+const editedDate = ref('');
+const editedDescription = ref(null);
+const editedCategory = ref('');
+const editedAmount = ref();
 
 // validation add form
 const rules = {
@@ -193,6 +265,7 @@ const headers = ref([
     { title: 'Description', align: 'center', key: 'description' },
     { title: 'Catégorie', align: 'center', key: 'category' },
     { title: 'Montant', align: 'center', key: 'amount' },
+    { title: 'Actions', align: 'center', key: 'actions' },
 ])
 
 function formatDate(dateString) {
@@ -215,22 +288,21 @@ const displayedIncomesWithTextCategories = computed(() => {
 
         return {
             ...income,
+            originalCategory: income.category, // keep the id
             category: category ? category.name : 'Catégorie inconnue',
         };
     });
 });
 
 const incomeTypeCategories = computed(() => {
-    const incomeTypeCategories = Array.isArray(categories)
-    ? categories.filter(category => category.type === 'INCOME')
-    : [];
+    const rawCategories = categories.value;
 
-    return incomeTypeCategories;
+    return Array.isArray(rawCategories)
+    ? rawCategories.filter(category => category.type === 'INCOME')
+    : [];
 });
 
 const handleSubmit = async () => {
-    console.log("handleSubmit", date.value, description.value, category, amount.value);
-
     error.value = null
 
     try {
@@ -254,6 +326,34 @@ const handleSubmit = async () => {
         snackbarMessage.value = "Erreur lors de l'ajout.";
         snackbarColor.value = 'deep-orange-accent-4';
         snackbar.value = true;
+    }
+};
+
+function editIncome(income) {
+    editingIncomeId.value = income.id;
+    editedDate.value = income.date;
+    editedDescription.value = income.description;
+    editedCategory.value = income.originalCategory || income.category; // keep the id
+    editedAmount.value = parseFloat(income.amount) || 0; // so we are sure to deal with a number
+};
+
+const saveEditedIncome = async () => {
+    try {
+        await incomeStore.updateIncome(
+            editingIncomeId.value,
+            Number(editedCategory.value),
+            Number(editedAmount.value),
+            editedDate.value,
+            editedDescription.value,
+        );
+
+        editingIncomeId.value = null;
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour du revenu', error);
+
+        snackbarMessage.value = 'Erreur lors de la mise à jour.';
+        snackbarColor.value = 'deep-orange-accent-4';
+        snackbar.value = true;  
     }
 };
 
