@@ -41,7 +41,7 @@
                             <tr>
                                 <td>
                                     <div>
-                                        {{ item.date }}
+                                        {{ formatDate(item.date) }}
                                     </div>
                                 </td>
 
@@ -109,5 +109,16 @@ const headers = ref([
     { title: 'Montant', align: 'center', key: 'amount' },
     { title: 'Actions', align: 'center', key: 'actions' },
 ])
+
+function formatDate(dateString) {
+    // currently get the date as year-month-day from the API
+    const date = new Date(dateString);
+
+    const day = date.getDate().toString().padStart(2, '0'); // "03"
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // "05"
+    const year = date.getFullYear(); // 2025
+
+    return `${day}-${month}-${year}`;    
+};
 
 </script>
