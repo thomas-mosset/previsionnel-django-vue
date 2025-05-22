@@ -97,5 +97,36 @@ export const useExpenseStore = defineStore('expense', {
                 throw new Error('La mise à jour de la dépense a échoué.');
             }
         },
+        async deleteExpense(id) {
+            try {
+                const authStore = useAuthStore();
+                let token = authStore.token;
+                const refreshToken = authStore.refreshToken;
+
+                // if we don't find the token
+                if (!token) {
+                    // we use the refresh token...
+                    if (refreshToken) {
+                        // to refresh the access token
+                        await authStore.refreshAccessToken();
+                        token = authStore.token;  // get the new access token
+                    } else {
+                        throw new Error('Token non trouvé. Veuillez vous reconnecter.');
+                    }
+                }
+
+                await axiosAPI.delete(`/expenses/${id}/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                this.expenses = this.expenses.filter(expense => expense.id !== id);
+
+            } catch (error) {
+                console.error('Erreur lors de la suppression de la dépense', error);
+                throw new Error('La suppression de la dépense a échoué.');
+            }
+        },
     },
 });

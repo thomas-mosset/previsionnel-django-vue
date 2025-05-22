@@ -186,7 +186,7 @@
                                             <v-icon color="warning" icon="mdi-pencil"></v-icon>
                                         </v-btn>
 
-                                        <v-btn class="ma-1">
+                                        <v-btn @click="deleteExpense(item.id)" class="ma-1">
                                             <v-icon color="red" icon="mdi-delete"></v-icon>
                                         </v-btn>
                                     </div>
@@ -348,6 +348,23 @@ const saveEditedExpense = async () => {
         snackbarMessage.value = 'Erreur lors de la mise à jour.';
         snackbarColor.value = 'deep-orange-accent-4';
         snackbar.value = true;  
+    }
+};
+
+const deleteExpense = async (id) => {
+    try {
+        await expenseStore.deleteExpense(id);
+
+        snackbarMessage.value = "Dépense supprimée avec succès.";
+        snackbarColor.value = "green-darken-4";
+        snackbar.value = true;
+
+    } catch (error) {
+        console.error('Erreur lors de la suppression de la dépense', error);
+
+        snackbarMessage.value = "Erreur lors de la suppression de la dépense.";
+        snackbarColor.value = "deep-orange-accent-4";
+        snackbar.value = true;
     }
 };
 
