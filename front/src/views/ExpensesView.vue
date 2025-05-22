@@ -33,7 +33,7 @@
                         v-else
                         :headers="headers"
                         items-per-page="5"
-                        :items="expenseStore.expenses"
+                        :items="displayedExpensesWithTextCategories"
                         :items-per-page-text="'Éléments par page'"
                         class="elevation-1"
                     >
@@ -88,18 +88,22 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useAuthStore } from '@/stores/auth';
+import { useCategoryStore } from '@/stores/category';
 import { useExpenseStore } from "@/stores/expense";
 
 const authStore = useAuthStore();
 const isAuthenticated = authStore.isAuthenticated;
+
+const categoryStore = useCategoryStore();
 
 const expenseStore = useExpenseStore();
 
 onMounted(() => {
     authStore.initialize();
     expenseStore.fetchExpenses();
+    categoryStore.fetchCategories();
 })
 
 const headers = ref([
@@ -120,5 +124,17 @@ function formatDate(dateString) {
 
     return `${day}-${month}-${year}`;    
 };
+
+const displayedExpensesWithTextCategories = computed(() => {
+    return expenseStore.expenses.map(expense => {
+        const category = categoryStore.categories.find(category => category.id === expense.category);
+
+        return {
+            ...expense,
+            originalCategory: expense.category,
+            category: category ? category.name : 'Catégorie inconnue',
+        };
+    });
+});
 
 </script>
