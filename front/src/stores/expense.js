@@ -55,5 +55,47 @@ export const useExpenseStore = defineStore('expense', {
                 throw new Error('L\'ajout de la dépense a échoué.');  
             }
         },
+        async updateExpense(id, newExpenseCategory, newExpenseAmount, newExpenseDate, newExpenseDescription) {
+            try {
+                const authStore = useAuthStore();
+                let token = authStore.token;
+                const refreshToken = authStore.refreshToken;
+
+                if(!token) {
+                    if (refreshToken) {
+                        await authStore.refreshAccessToken();
+                        token = authStore.token;
+                    } else {
+                        throw new Error('Token non trouvé. Veuillez vous reconnecter.');
+                    }
+                }
+
+                await axiosAPI.put(
+                    `/expenses/${id}/`,
+                    {
+                        category: newExpenseCategory,
+                        amount: newExpenseAmount,
+                        date: newExpenseDate,
+                        description: newExpenseDescription,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                const updatedExpense = this.expenses.find(expense => expense.id === id);
+
+                updatedExpense.category = newExpenseCategory;
+                updatedExpense.amount = newExpenseAmount;
+                updatedExpense.date = newExpenseDate;
+                updatedExpense.description = newExpenseDescription;
+
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de la dépense', error.response?.data || error.message);
+                throw new Error('La mise à jour de la dépense a échoué.');
+            }
+        },
     },
 });

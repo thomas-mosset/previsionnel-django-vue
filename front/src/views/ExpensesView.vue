@@ -104,35 +104,85 @@
                         <template v-slot:item="{ item }">
                             <tr>
                                 <td>
-                                    <div>
+                                        <div v-if="editingExpenseId === item.id">
+                                        <v-text-field
+                                            class="mx-1"
+                                            v-model="editedDate"
+                                            label="Date"
+                                            type="date"
+                                            hide-details
+                                        ></v-text-field>
+                                    </div>
+                                    <div v-else>
                                         {{ formatDate(item.date) }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div v-if="item.description">
-                                        {{ item.description }}
+                                    <div v-if="editingExpenseId === item.id">
+                                        <v-text-field v-model="editedDescription" hide-details />
                                     </div>
+
                                     <div v-else>
-                                        Pas de description disponible
+                                        <div v-if="item.description">
+                                            {{ item.description }}
+                                        </div>
+                                        <div v-else>
+                                            Pas de description disponible
+                                        </div>
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
+                                    <div v-if="editingExpenseId === item.id">
+                                        <v-select
+                                            class="mx-1"
+                                            label="Catégorie"
+                                            v-model="editedCategory"
+                                            :items="incomeTypeCategories"
+                                            item-title="name"
+                                            item-value="id"
+                                            no-data-text="Aucune donnée disponible"
+                                            hide-details
+                                        ></v-select>
+                                    </div>
+
+                                    <div v-else>
                                         {{ item.category }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
+                                    <div v-if="editingExpenseId === item.id" class="my-2">
+                                        <v-number-input
+                                            class="mx-1"
+                                            label="Montant"
+                                            :min="1"
+                                            v-model="editedAmount"
+                                            hide-details
+                                        ></v-number-input>
+                                    </div>
+
+                                    <div v-else>
                                         {{ item.amount }} €
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
-                                        <v-btn class="mx-1">
+                                    <!-- EDIT MODE -->
+                                    <div v-if="editingExpenseId === item.id">
+                                        <v-btn @click="saveEditedExpense" class="mx-1">
+                                            <v-icon color="green-darken-4" icon="mdi-check"></v-icon>
+                                        </v-btn>
+
+                                        <v-btn @click="editingExpenseId = null" class="mx-1">
+                                            <v-icon color="grey-darken-4 " icon="mdi-close"></v-icon>
+                                        </v-btn>
+                                    </div>
+
+                                    <!-- DISPLAY MODE -->
+                                    <div v-else>
+                                        <v-btn @click="editExpense(item)" class="mx-1">
                                             <v-icon color="warning" icon="mdi-pencil"></v-icon>
                                         </v-btn>
 
@@ -188,6 +238,13 @@ const date = ref('');
 const description = ref(null);
 const category = ref('');
 const amount = ref();
+
+// edit mode
+const editingExpenseId = ref(null);
+const editedDate = ref('');
+const editedDescription = ref(null);
+const editedCategory = ref('');
+const editedAmount = ref();
 
 // validation add form
 const rules = {
@@ -263,6 +320,34 @@ const handleSubmit = async () => {
         snackbarMessage.value = "Erreur lors de l'ajout.";
         snackbarColor.value = 'deep-orange-accent-4';
         snackbar.value = true;
+    }
+};
+
+function editExpense(expense) {
+    editingExpenseId.value = expense.id;
+    editedDate.value = expense.date;
+    editedDescription.value = expense.description;
+    editedCategory.value = expense.originalCategory || expense.category;
+    editedAmount.value = parseFloat(expense.amount) || 0; 
+};
+
+const saveEditedExpense = async () => {
+    try {
+        await expenseStore.updateExpense(
+            editingExpenseId.value,
+            Number(editedCategory.value),
+            Number(editedAmount.value),
+            editedDate.value,
+            editedDescription.value,
+        );
+
+        editingExpenseId.value = null;
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour de la dépense', error);
+
+        snackbarMessage.value = 'Erreur lors de la mise à jour.';
+        snackbarColor.value = 'deep-orange-accent-4';
+        snackbar.value = true;  
     }
 };
 
