@@ -33,7 +33,7 @@
                         v-else
                         :headers="headers"
                         items-per-page="5"
-                        :items="budgetStore.budgets"
+                        :items="displayBudgetsWithTextCategories"
                         :items-per-page-text="'Éléments par page'"
                         class="elevation-1"
                     >
@@ -72,18 +72,22 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useAuthStore } from '@/stores/auth';
 import { useBudgetStore } from '@/stores/budget';
+import { useCategoryStore } from '@/stores/category';
 
 const authStore = useAuthStore();
 const isAuthenticated = authStore.isAuthenticated;
+
+const categoryStore = useCategoryStore();
 
 const budgetStore = useBudgetStore();
 
 onMounted(() => {
     authStore.initialize();
     budgetStore.fetchBudgets();
+    categoryStore.fetchCategories();
 })
 
 const headers = ref([
@@ -98,6 +102,18 @@ function displayMonthsAsText(monthNumber) {
 
     return months[monthNumber - 1] || "Mois invalide";
 };
+
+const displayBudgetsWithTextCategories = computed(() => {
+    return budgetStore.budgets.map(budget => {
+        const category = categoryStore.categories.find(category => category.id === budget.category);
+
+        return {
+            ...budget,
+            originalCategory: budget.category,
+            category: category ? category.name : 'Catégorie inconnue',
+        }
+    })
+});
 
 
 </script>
