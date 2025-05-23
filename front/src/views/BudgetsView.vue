@@ -41,7 +41,7 @@
                             <tr>
                                 <td>
                                     <div>
-                                        {{ item.month }}
+                                        {{ displayMonthsAsText(item.month) }}
                                     </div>
                                 </td>
 
@@ -92,6 +92,12 @@ const headers = ref([
     { title: 'Catégorie', align: 'center', key: 'category' },
     { title: 'Montant', align: 'center', key: 'amount' },
 ])
+
+function displayMonthsAsText(monthNumber) {
+    const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+    return months[monthNumber - 1] || "Mois invalide";
+};
 
 
 </script>
