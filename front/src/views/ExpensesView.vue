@@ -36,7 +36,7 @@
                                         class="mx-1"
                                         label="Catégorie"
                                         v-model="category"
-                                        :items="incomeTypeCategories"
+                                        :items="expenseTypeCategories"
                                         item-title="name"
                                         item-value="id"
                                         :rules="[rules.required]"
@@ -139,7 +139,7 @@
                                             class="mx-1"
                                             label="Catégorie"
                                             v-model="editedCategory"
-                                            :items="incomeTypeCategories"
+                                            :items="expenseTypeCategories"
                                             item-title="name"
                                             item-value="id"
                                             no-data-text="Aucune donnée disponible"
@@ -288,7 +288,7 @@ const displayedExpensesWithTextCategories = computed(() => {
     });
 });
 
-const incomeTypeCategories = computed(() => {
+const expenseTypeCategories = computed(() => {
     const rawCategories = categories.value;
 
     return Array.isArray(rawCategories)
