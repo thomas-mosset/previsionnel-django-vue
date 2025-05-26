@@ -16,7 +16,6 @@
                     </v-col>
                 </v-row>
 
-
                 <v-row v-if="!budgetStore.loading">
                     <v-col cols="12">
                         <h2 class="mb-6">Ajouter un budget</h2>
@@ -85,9 +84,6 @@
                     </v-col>
                 </v-row>
 
-
-
-
                 <v-row>
                     <div v-if="budgetStore.loading" class="w-100 text-center">
                         <p>Chargement...</p>
@@ -112,28 +108,101 @@
                         <template v-slot:item="{ item }">
                             <tr>
                                 <td>
-                                    <div>
+                                    <div v-if="editingBudgetId === item.id">
+                                        <v-select
+                                            class="mx-1"
+                                            label="Mois"
+                                            v-model="editedMonth"
+                                            :items="formSelectMonths"
+                                            item-title="text"
+                                            item-value="id"
+                                            :rules="[rules.required]"
+                                            no-data-text="Aucune donnée disponible"
+                                            hide-details
+                                        ></v-select>
+                                    </div>
+
+                                    <div v-else>
                                         {{ displayMonthsAsText(item.month) }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
+                                    <div v-if="editingBudgetId === item.id">
+                                        <v-number-input
+                                            class="mx-1"
+                                            :min="currentYear"
+                                            v-model="editedYear"
+                                            label="Année"
+                                            :rules="[rules.required]"
+                                            hide-details
+                                        ></v-number-input>
+                                    </div>
+
+                                    <div v-else>
                                         {{ item.year }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
+                                    <div v-if="editingBudgetId === item.id">
+                                        <v-select
+                                            class="mx-1"
+                                            label="Catégorie"
+                                            v-model="editedCategory"
+                                            :items="expenseTypeCategories"
+                                            item-title="name"
+                                            item-value="id"
+                                            no-data-text="Aucune donnée disponible"
+                                            hide-details
+                                        ></v-select>
+                                    </div>
+
+                                    <div v-else>
                                         {{ item.category }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>
+                                    <div v-if="editingBudgetId === item.id">
+                                        <v-number-input
+                                            class="mx-1"
+                                            label="Montant"
+                                            :min="1"
+                                            v-model="editedAmount"
+                                            hide-details
+                                        ></v-number-input>
+                                    </div>
+
+                                    <div v-else>
                                         {{ item.amount }} €
                                     </div>
                                 </td>
+
+                                <td>
+                                    <!-- EDIT MODE -->
+                                    <div v-if="editingBudgetId === item.id">
+                                        <v-btn @click="saveEditedBudget" class="mx-1">
+                                            <v-icon color="green-darken-4" icon="mdi-check"></v-icon>
+                                        </v-btn>
+
+                                        <v-btn @click="editingBudgetId = null" class="mx-1">
+                                            <v-icon color="grey-darken-4 " icon="mdi-close"></v-icon>
+                                        </v-btn>
+                                    </div>
+
+                                    <!-- DISPLAY MODE -->
+                                    <div v-else>
+                                        <v-btn @click="editBudget(item)" class="mx-1">
+                                            <v-icon color="warning" icon="mdi-pencil"></v-icon>
+                                        </v-btn>
+
+                                        <v-btn class="ma-1">
+                                            <v-icon color="red" icon="mdi-delete"></v-icon>
+                                        </v-btn>
+                                    </div>
+                                </td>
+
                             </tr>
                         </template>
                     </v-data-table>
@@ -182,6 +251,13 @@ const year = ref();
 const category = ref('');
 const amount = ref(1);
 
+// edit mode
+const editingBudgetId = ref(null);
+const editedMonth = ref();
+const editedYear = ref();
+const editedCategory = ref('');
+const editedAmount = ref(); 
+
 // validation add form
 const rules = {
   required: (v) => !!v || 'Champ requis',
@@ -198,6 +274,7 @@ const headers = ref([
     { title: 'Année', align: 'center', key: 'year' },
     { title: 'Catégorie', align: 'center', key: 'category' },
     { title: 'Montant', align: 'center', key: 'amount' },
+    { title: 'Actions', align: 'center', key: 'actions' },
 ])
 
 const formSelectMonths = [
@@ -271,5 +348,32 @@ const handleSubmit = async () => {
     }
 };
 
+function editBudget(budget) {
+    editingBudgetId.value = budget.id;
+    editedMonth.value = budget.month;
+    editedYear.value = budget.year;
+    editedCategory.value = budget.originalCategory || budget.category;
+    editedAmount.value = parseFloat(budget.amount) || 0; 
+};
+
+const saveEditedBudget = async () => {
+    try {
+        await budgetStore.updateBudget(
+            editingBudgetId.value,
+            Number(editedMonth.value),
+            Number(editedYear.value),
+            Number(editedCategory.value),
+            Number(editedAmount.value),
+        );
+
+        editingBudgetId.value = null;
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour du budget', error);
+
+        snackbarMessage.value = 'Erreur lors de la mise à jour.';
+        snackbarColor.value = 'deep-orange-accent-4';
+        snackbar.value = true;  
+    }
+};
 
 </script>

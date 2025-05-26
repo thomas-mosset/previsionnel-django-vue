@@ -43,7 +43,7 @@ export const useBudgetStore = defineStore('budget', {
                         month: budgetMonth,
                         year: budgetYear,
                         category: budgetCategory,
-                        amount: parseFloat(budgetAmount), // sécurise ici aussi
+                        amount: parseFloat(budgetAmount),
                     },
                     {
                         headers: {
@@ -57,6 +57,48 @@ export const useBudgetStore = defineStore('budget', {
             } catch (error) {
                 console.error('Erreur lors de l\'ajout du budget', error);
                 throw new Error('L\'ajout du budget a échoué.');  
+            }
+        },
+        async updateBudget(id, newBudgetMonth, newBudgetYear, newBudgetCategory, newBudgetAmount) {
+            try {
+                const authStore = useAuthStore();
+                let token = authStore.token;
+                const refreshToken = authStore.refreshToken;
+
+                if(!token) {
+                    if (refreshToken) {
+                        await authStore.refreshAccessToken();
+                        token = authStore.token;
+                    } else {
+                        throw new Error('Token non trouvé. Veuillez vous reconnecter.');
+                    }
+                }
+
+                await axiosAPI.put(
+                    `/budgets/${id}/`,
+                    {
+                        month: newBudgetMonth,
+                        year: newBudgetYear,
+                        category: newBudgetCategory,
+                        amount: parseFloat(newBudgetAmount),
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                const updatedBudget = this.budgets.find(budget => budget.id === id);
+
+                updatedBudget.month = newBudgetMonth;
+                updatedBudget.year = newBudgetYear;
+                updatedBudget.category = newBudgetCategory;
+                updatedBudget.amount = newBudgetAmount;
+
+            }  catch (error) {
+                console.error('Erreur lors de la mise à jour du budget', error.response?.data || error.message);
+                throw new Error('La mise à jour du budget a échoué.');
             }
         },
     }
