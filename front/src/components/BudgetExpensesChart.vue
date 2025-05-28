@@ -1,6 +1,14 @@
 <template>
     <div class="mb-16">
-        <v-row>
+        <div v-if="loading" class="text-center my-6">
+            Chargement des données...
+        </div>
+
+        <div v-else-if="error" class="text-center my-6 red--text">
+            {{ error }}
+        </div>
+
+        <v-row v-if="!loading">
             <v-col cols="12">
                 <h2 class="mb-6">Filtrer les données par :</h2>
             </v-col>
@@ -211,9 +219,21 @@ const chartData = computed(() => ({
   ]
 }));
 
+const loading = ref(false);
+const error = ref(null);
+
 onMounted(async () => {
+  loading.value = true;
+  error.value = null;
+  try {
     await expenseStore.fetchExpenses();
     await budgetStore.fetchBudgets();
+  } catch (err) {
+    error.value = "Erreur lors du chargement des données.";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
 });
 
 </script>
