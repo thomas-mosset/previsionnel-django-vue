@@ -57,17 +57,17 @@
                     <span>
                         <v-icon color="deep-orange-accent-4" icon="mdi-alert" size="x-large"></v-icon>
                     </span>
-                    Vous avez dépassé votre budget de <span class="font-weight-bold">{{ Math.abs(totalBudget - totalExpense) }} €</span> pour le mois de <span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
+                    Vous avez dépassé votre budget de <span class="font-weight-bold">{{ Math.abs(totalBudget - totalExpense) }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
                 </p>
 
                 <!-- if budget is > to total expense then  XX amount of money is left -->
                 <p v-else-if="totalBudget - totalExpense > 0">
-                    Il vous reste donc <span class="font-weight-bold">{{ totalBudget - totalExpense }} €</span> pour le mois de <span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
+                    Il vous reste donc <span class="font-weight-bold">{{ totalBudget - totalExpense }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
                 </p>
 
                 <!-- if budget is = to total expense then no money is left and user needs to be carefull until next month -->
                 <p v-else-if="totalBudget - totalExpense === 0">
-                    Vous avez utilisé l'intégralité de votre budget pour le mois de <span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>. Soyez vigilant·e jusqu'au mois prochain.
+                    Vous avez utilisé l'intégralité de votre budget pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>. Soyez vigilant·e jusqu'au mois prochain.
                 </p>
             </v-col>
 
@@ -81,12 +81,12 @@
                         <span>
                             <v-icon color="deep-orange-accent-4" icon="mdi-alert" size="x-large"></v-icon>
                         </span>
-                        <span class="font-weight-bold">Vous avez dépassé votre budget de {{ Math.abs(totalBudget - totalExpense) }} €</span> pour le mois de <span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
+                        <span class="font-weight-bold">Vous avez dépassé votre budget de {{ Math.abs(totalBudget - totalExpense) }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
                     </p>
 
                     <!-- if budget is > to total expense then some money is left -->
                     <p v-else-if="totalBudget - totalExpense > 0">
-                        Il vous reste donc <span class="font-weight-bold">{{ totalBudget - totalExpense }} €</span> pour le mois de <span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
+                        Il vous reste donc <span class="font-weight-bold">{{ totalBudget - totalExpense }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
                     </p>
 
                     <!-- if budget is = to total expense then no money is left and user needs to be carefull until next month -->
@@ -94,7 +94,7 @@
                         <span>
                             <v-icon color="deep-orange-accent-4" icon="mdi-alert" size="x-large"></v-icon>
                         </span>
-                        Vous avez utilisé l'intégralité de votre budget pour le mois de {{ monthName.toLowerCase() }} {{ selectedYear }}. Soyez vigilant·e jusqu'au mois prochain.
+                        Vous avez utilisé l'intégralité de votre budget pour le mois {{ monthPrefix }}{{ monthName.toLowerCase() }} {{ selectedYear }}. Soyez vigilant·e jusqu'au mois prochain.
                     </p>
             </v-col>
         </v-row>
@@ -134,7 +134,7 @@ const selectedCategoryName = computed(() =>
 );
 
 const chartAriaLabel = computed(() => {
-  return `Comparaison du budget et des dépenses pour le mois de ${monthName.toLowerCase()} de l'année ${selectedYear.value}. (Catégorie : ${selectedCategoryName.value})`;
+  return `Comparaison du budget et des dépenses pour le mois ${monthPrefix.value}${monthName.value.toLowerCase()} de l'année ${selectedYear.value}. (Catégorie : ${selectedCategoryName.value})`;
 });
 
 const formSelectMonths = [
@@ -152,7 +152,15 @@ const formSelectMonths = [
     { text: 'Décembre', id: 12 },
 ];
 
-const monthName = formSelectMonths.find(month => month.id === selectedMonth.value)?.text || '';
+const monthName = computed(() =>
+  formSelectMonths.find(month => month.id === selectedMonth.value)?.text || ''
+);
+
+const monthWithApostrophe = [4, 8, 10]; // April, August, October
+
+const monthPrefix = computed(() =>
+  monthWithApostrophe.includes(selectedMonth.value) ? "d'" : "de "
+);
 
 const filteredExpenses = computed(() => 
     expenses.value.filter(expense => {
