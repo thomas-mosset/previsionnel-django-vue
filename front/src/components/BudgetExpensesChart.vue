@@ -44,8 +44,10 @@
                 :data="chartData" 
                 :aria-label="chartAriaLabel"
             />
-            <h3 class="mt-6 mx-auto">{{ chartAriaLabel }}</h3>
+            <h3 class="my-6 mx-auto">{{ chartAriaLabel }}</h3>
         </v-row>
+
+        <v-divider :thickness="3" class="mt-16"></v-divider>
     </div>
 </template>
 
