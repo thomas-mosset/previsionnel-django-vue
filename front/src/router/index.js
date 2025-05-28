@@ -8,6 +8,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { title: 'Accueil' }
     },
     {
       path: '/login',
@@ -16,6 +17,7 @@ const router = createRouter({
       // this generates a separate chunk (Login.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/FormLoginView.vue'),
+      meta: { title: 'Se connecter' }
     },
     {
       path: '/registration',
@@ -24,6 +26,7 @@ const router = createRouter({
       // this generates a separate chunk (Registration.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/FormRegistrationView.vue'),
+      meta: { title: 'S\'inscrire' }
     },
     {
       path: '/profil',
@@ -32,6 +35,7 @@ const router = createRouter({
       // this generates a separate chunk (Profil.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/ProfilView.vue'),
+      meta: { title: 'Mon profil' }
     },
     {
       path: '/profil/categories',
@@ -40,6 +44,7 @@ const router = createRouter({
       // this generates a separate chunk (Categories.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/CategoriesView.vue'),
+      meta: { title: 'Mes catégories' }
     },
     {
       path: '/profil/incomes',
@@ -48,6 +53,7 @@ const router = createRouter({
       // this generates a separate chunk (Incomes.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/IncomesView.vue'),
+      meta: { title: 'Mes revenus' }
     },
     {
       path: '/profil/expenses',
@@ -56,6 +62,7 @@ const router = createRouter({
       // this generates a separate chunk (Expenses.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/ExpensesView.vue'),
+      meta: { title: 'Mes dépenses' }
     },
     {
       path: '/profil/budgets',
@@ -64,16 +71,14 @@ const router = createRouter({
       // this generates a separate chunk (Budgets.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/BudgetsView.vue'),
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      meta: { title: 'Mes budgets' }
     },
   ],
-})
+});
+
+router.afterEach((to) => {
+  const defaultTitle = 'Mon Prévisionnel'; // Global application name
+  document.title = to.meta.title ? `${to.meta.title} - ${defaultTitle}` : defaultTitle;
+});
 
 export default router
