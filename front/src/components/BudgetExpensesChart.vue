@@ -47,41 +47,47 @@
             </v-col>
         </v-row>
 
-        <v-row>
+        <v-row v-if="!loading">
             <Bar 
                 :data="chartData" 
                 :aria-label="chartAriaLabel"
-            />
+                role="img" 
+            /> <!-- role="img" is for accessibility so the aria-label is taken into account as a priority -->
             <h3 class="my-6 mx-auto">{{ chartAriaLabel }}</h3>
         </v-row>
 
-        <v-row class="my-6 mx-auto">
+        <v-row class="my-6 mx-auto" v-if="!loading">
             <!-- if no category is selected -->
             <v-col cols="12" v-if="selectedCategory === null">
-                <p> Vous avez utilisé <span class="font-weight-bold">{{ totalExpense }} €</span> des <span class="font-weight-bold">{{ totalBudget }} €</span> prévus dans votre budget total de dépenses.</p>
+                <!-- role="status" aria-live="polite" are for accessibility -->
+                <!-- This allows screen readers to automatically read the message when the content changes (for example, when the user selects a different month/category) -->
+                <div role="status" aria-live="polite">
+                    <p> Vous avez utilisé <span class="font-weight-bold">{{ totalExpense }} €</span> des <span class="font-weight-bold">{{ totalBudget }} €</span> prévus dans votre budget total de dépenses.</p>
             
-                <!-- if budget is < to total expense then money is XX amount of left-->
-                <p v-if="totalBudget - totalExpense < 0">
-                    <span>
-                        <v-icon color="deep-orange-accent-4" icon="mdi-alert" size="x-large"></v-icon>
-                    </span>
-                    Vous avez dépassé votre budget de <span class="font-weight-bold">{{ Math.abs(totalBudget - totalExpense) }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
-                </p>
+                    <!-- if budget is < to total expense then money is XX amount of left-->
+                    <p v-if="totalBudget - totalExpense < 0">
+                        <span>
+                            <v-icon color="deep-orange-accent-4" icon="mdi-alert" size="x-large"></v-icon>
+                        </span>
+                        Vous avez dépassé votre budget de <span class="font-weight-bold">{{ Math.abs(totalBudget - totalExpense) }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
+                    </p>
 
-                <!-- if budget is > to total expense then  XX amount of money is left -->
-                <p v-else-if="totalBudget - totalExpense > 0">
-                    Il vous reste donc <span class="font-weight-bold">{{ totalBudget - totalExpense }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
-                </p>
+                    <!-- if budget is > to total expense then  XX amount of money is left -->
+                    <p v-else-if="totalBudget - totalExpense > 0">
+                        Il vous reste donc <span class="font-weight-bold">{{ totalBudget - totalExpense }} €</span> pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>.
+                    </p>
 
-                <!-- if budget is = to total expense then no money is left and user needs to be carefull until next month -->
-                <p v-else-if="totalBudget - totalExpense === 0">
-                    Vous avez utilisé l'intégralité de votre budget pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>. Soyez vigilant·e jusqu'au mois prochain.
-                </p>
+                    <!-- if budget is = to total expense then no money is left and user needs to be carefull until next month -->
+                    <p v-else-if="totalBudget - totalExpense === 0">
+                        Vous avez utilisé l'intégralité de votre budget pour le mois {{ monthPrefix }}<span class="font-weight-bold">{{ monthName.toLowerCase() }} {{ selectedYear }}</span>. Soyez vigilant·e jusqu'au mois prochain.
+                    </p>
+                </div>
             </v-col>
 
             <!-- if a category is selected -->
             <v-col cols="12" v-else>
-                <p>Vous avez utilisé <span class="font-weight-bold">{{ totalExpense }} €</span> des {{ totalBudget }} € prévus dans votre <span class="font-weight-bold">budget</span> pour la catégorie "<span class="font-weight-bold">{{ selectedCategoryName.toLowerCase() }}"</span>.</p>
+                <div role="status" aria-live="polite">
+                    <p>Vous avez utilisé <span class="font-weight-bold">{{ totalExpense }} €</span> des {{ totalBudget }} € prévus dans votre <span class="font-weight-bold">budget</span> pour la catégorie "<span class="font-weight-bold">{{ selectedCategoryName.toLowerCase() }}"</span>.</p>
 
                     <p v-if="totalBudget - totalExpense < 0">
 
@@ -104,6 +110,7 @@
                         </span>
                         Vous avez utilisé l'intégralité de votre budget pour le mois {{ monthPrefix }}{{ monthName.toLowerCase() }} {{ selectedYear }}. Soyez vigilant·e jusqu'au mois prochain.
                     </p>
+                </div>
             </v-col>
         </v-row>
 
