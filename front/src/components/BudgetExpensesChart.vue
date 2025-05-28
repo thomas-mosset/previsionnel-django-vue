@@ -5,7 +5,7 @@
                 <h2 class="mb-6">Filtrer les données par :</h2>
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
                 <v-select
                     class="mx-1"
                     v-model="selectedMonth"
@@ -16,7 +16,7 @@
                 />
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
                 <v-number-input
                     class="mx-1"
                     :min="2020"
@@ -25,6 +25,18 @@
                     label="Année"
                 ></v-number-input>
             </v-col>
+
+            <v-col cols="12" md="4">
+                <v-select
+                    class="mx-1"
+                    v-model="selectedCategory"
+                    :items="filteredExpensesCategories"
+                    item-title="name"
+                    item-value="id"
+                    label="Catégorie de dépenses"
+                    :clearable="true"
+                />
+            </v-col>
         </v-row>
 
         <v-row>
@@ -32,6 +44,7 @@
                 :data="chartData" 
                 :aria-label="chartAriaLabel"
             />
+            <h3 class="mt-6 mx-auto">{{ chartAriaLabel }}</h3>
         </v-row>
     </div>
 </template>
@@ -42,9 +55,9 @@ import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
-
 import { useExpenseStore } from "@/stores/expense";
 import { useBudgetStore } from "@/stores/budget";
+import { useCategoryStore } from '@/stores/category';
 
 const expenseStore = useExpenseStore();
 const expenses = computed(() => expenseStore.expenses || []);
@@ -52,16 +65,24 @@ const expenses = computed(() => expenseStore.expenses || []);
 const budgetStore = useBudgetStore();
 const budgets = computed(() => budgetStore.budgets || []);
 
+const categoryStore = useCategoryStore();
+const categories = computed(() => categoryStore.categories || []);
+
 const currentMonth = new Date().getUTCMonth() + 1;
 const currentYear = new Date().getFullYear();
 
 const selectedMonth = ref(currentMonth);
 const selectedYear = ref(currentYear);
+const selectedCategory = ref(null);
+
+const selectedCategoryName = computed(() =>
+  filteredExpensesCategories.value.find(category => category.id === selectedCategory.value)?.name || 'Toutes les catégories'
+);
 
 const chartAriaLabel = computed(() => {
   const monthName = formSelectMonths.find(m => m.id === selectedMonth.value)?.text || '';
 
-  return `Comparaison du budget et des dépenses pour le mois de ${monthName.toLowerCase()} de l'année ${selectedYear.value}.`;
+  return `Comparaison du budget et des dépenses pour le mois de ${monthName.toLowerCase()} de l'année ${selectedYear.value}. (Catégorie : ${selectedCategoryName.value})`;
 });
 
 const formSelectMonths = [
@@ -82,20 +103,32 @@ const formSelectMonths = [
 const filteredExpenses = computed(() => 
     expenses.value.filter(expense => {
         const date = new Date(expense.date);
+        const matchedDate = date.getFullYear() === selectedYear.value && date.getMonth() + 1 === selectedMonth.value;
 
-        return (
-            date.getFullYear() === selectedYear.value 
-            &&
-            date.getMonth() + 1 === selectedMonth.value
-        )
+        // take into account the selected category only if it is defined / selected by the user
+        const matchedCategory = !selectedCategory.value || expense.category === selectedCategory.value;
+
+        return matchedDate && matchedCategory;
     })
 );
 
 const filteredBudgets = computed(() => 
-    budgets.value.filter(
-        budget => budget.month === selectedMonth.value && budget.year === selectedYear.value
-    )
+    budgets.value.filter(budget => {
+            const matchedBudgetForSelectedDate = budget.month === selectedMonth.value && budget.year === selectedYear.value;
+
+            const matchedCategory = !selectedCategory.value || budget.category === selectedCategory.value;
+
+            return matchedBudgetForSelectedDate && matchedCategory;
+        })
 );
+
+const filteredExpensesCategories = computed(() => {
+    const rawCategories = categories.value;
+
+    return Array.isArray(rawCategories)
+    ? rawCategories.filter(category => category.type === 'EXPENSE')
+    : [];
+});
 
 const totalDepense = computed(() =>
   filteredExpenses.value.reduce((sum, expense) => sum + parseFloat(expense.amount), 0)
@@ -116,9 +149,9 @@ const chartData = computed(() => ({
   ]
 }));
 
-onMounted(() => {
-    expenseStore.fetchExpenses();
-    budgetStore.fetchBudgets();
+onMounted(async () => {
+    await expenseStore.fetchExpenses();
+    await budgetStore.fetchBudgets();
 });
 
 </script>
