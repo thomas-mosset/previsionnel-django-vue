@@ -11,6 +11,8 @@ Le projet **Prévisionnel** consiste en une application backend (pour le moment)
 - **Axios** : Client HTTP  utilisé pour communiquer avec l’API backend.
 - **Pinia** : Gestionnaire d’état / Store de Vue 3.
 - **Vue Router** : Système de routage pour Vue.js.
+- **Chart.js** : Bibliothèque JavaScript de graphiques, utilisée pour afficher des données visuellement.
+- **Vue ChartJS** : Intégration de Chart.js dans des composants Vue.
 
 ### Back (API)
 
