@@ -16,6 +16,9 @@
                     </v-col>
                 </v-row>
 
+                <!-- CHART COMPARISON W/ BUDGET -->
+                <BudgetExpensesChart />
+
                 <!-- ADD FORM -->
                 <v-row v-if="!expenseStore.loading">
                     <v-col cols="12">
@@ -218,6 +221,7 @@ import { onMounted, computed, ref } from "vue";
 import { useAuthStore } from '@/stores/auth';
 import { useCategoryStore } from '@/stores/category';
 import { useExpenseStore } from "@/stores/expense";
+import BudgetExpensesChart from '@/components/BudgetExpensesChart.vue';
 
 const authStore = useAuthStore();
 const isAuthenticated = authStore.isAuthenticated;
