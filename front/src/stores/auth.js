@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     initialize() {
       const tokenFromStorage = localStorage.getItem('token');
-      const refreshTokenFromStorage = localStorage.getItem('token');
+      const refreshTokenFromStorage = localStorage.getItem('refreshToken');
 
       if (tokenFromStorage) {
         this.token = tokenFromStorage;
@@ -77,7 +77,7 @@ export const useAuthStore = defineStore('auth', {
     },
     async registration(username, email, password, passwordConfirmation) {      
       try {
-        const response = await axiosAPI.post('/auth/registration/', {
+        await axiosAPI.post('/auth/registration/', {
           username,
           email,
           password1: password, /* "password1" is the name of the Django field */
@@ -93,8 +93,8 @@ export const useAuthStore = defineStore('auth', {
 
         this.token = tokenResponse.data.access;
         this.refreshToken = tokenResponse.data.refresh;
-        this.user = response.username;
-        this.userEmail = response.email;
+        this.user = username;
+        this.userEmail = email;
         this.isAuthenticated = true;
 
         localStorage.setItem('token', this.token)

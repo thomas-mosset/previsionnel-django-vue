@@ -363,7 +363,7 @@ const updatePWD = async () => {
     return;
   }
 
-  if (!currentPwd.value === (!newPwd.value || !newPwdConfirmation.value)) {
+  if (currentPwd.value === newPwd.value) {
     snackbarMessage.value = "Le nouveau mot de passe ne peut être identique à l'ancien.";
     snackbarColor.value = "deep-orange-accent-4";
     snackbar.value = true;
