@@ -1,6 +1,8 @@
-# Routes de l'API
+# Routes
 
-## Routes Authentification
+## Routes de l'API
+
+### Routes Authentification
 
 | **Méthode** | **Route**                       | **Description**                                                                 |
 |-------------|----------------------------------|---------------------------------------------------------------------------------|
@@ -16,8 +18,6 @@
 | ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)     | `/api/user/current/details/`             | Récupération des informations de l'utilisateur connecté (id, username, email). (Route protégée par token.)                          |
 | ![PATCH](https://img.shields.io/badge/PATCH-ffffff?style=for-the-badge&color=5928ed)     | `/api/user/current/`             | Mise à jour des informations (nom d'utilisateur et email) de l'utilisateur connecté. (Route protégée par token.)                        |
 | ![DELETE](https://img.shields.io/badge/DELETE-ffffff?style=for-the-badge&color=77011b)     | `/api/user/current/delete`             | Suppression de l'utilisateur connecté. (Route protégée par token.)                        |
-
-## Routes Ressources
 
 ### Catégories
 
@@ -58,3 +58,16 @@
 |  ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)      | `/api/budgets/{id}/`            | Récupérer les détails d'un budget spécifique.                                   |
 | ![PUT](https://img.shields.io/badge/PUT-ffffff?style=for-the-badge&color=031e98) | `/api/budgets/{id}/`            | Mettre à jour un budget spécifique.                                             |
 | ![DELETE](https://img.shields.io/badge/DELETE-ffffff?style=for-the-badge&color=77011b) | `/api/budgets/{id}/`            | Supprimer un budget spécifique. |
+
+## Routes Front-end
+
+| **Méthode** | **Route**                       | **Description**                                                                 |
+|-------------|----------------------------------|---------------------------------------------------------------------------------|
+|  ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)       | `/`                 | Accès à la page d'accueil.                                         |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)    | `/login`                 |  Accès à la page de connexion.                                                        |
+|  ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)      | `/registration`            | Accès à la page de création d'un compte utilisateur.                                   |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100) | `/profil`            |  Accès à la page profil (lecture et modification des informations, suppression du compte) de l'utilisateur·ice connecté·e.  (Page accessible uniquement après une connexion.)                   |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)  | `/profil/categories`            | Accès aux catégories (liste, ajout, modification, suppression) de l'utilisateur·ice connecté·e.  (Page accessible uniquement après une connexion.)  |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)  | `/profil/incomes`            | Accès aux revenus (liste, ajout, modification, suppression, graphique) de l'utilisateur·ice connecté·e.  (Page accessible uniquement après une connexion.)  |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)  | `/profil/expenses`            | Accès aux dépenses (liste, ajout, modification, suppression) de l'utilisateur·ice connecté·e.  (Page accessible uniquement après une connexion.)  |
+| ![GET](https://img.shields.io/badge/GET-ffffff?style=for-the-badge&color=2b8100)  | `/profil/budgets`            | Accès aux budgets (liste, ajout, modification, suppression) de l'utilisateur·ice connecté·e.  (Page accessible uniquement après une connexion.)  |
