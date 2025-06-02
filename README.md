@@ -1,6 +1,6 @@
 # Prévisionnel
 
-Le projet **Prévisionnel** consiste en une application backend (pour le moment) qui permet de gérer un système de prévision financière, incluant la gestion des catégories de dépenses, des revenus et des budgets. Cette API backend permet à un frontend d'interagir via des requêtes HTTP en utilisant les standards RESTful et l'authentification basée sur JSON Web Tokens (JWT).
+Le projet **Prévisionnel** consiste en une application web qui permet de gérer un système de prévision financière, incluant la gestion des catégories, des dépenses, des revenus et des budgets. L'API backend permet au frontend d'interagir via des requêtes HTTP en utilisant les standards RESTful et l'authentification basée sur JSON Web Tokens (JWT).
 
 ## Technologies utilisées
 
@@ -24,7 +24,7 @@ Le projet **Prévisionnel** consiste en une application backend (pour le moment)
 - **Simple JWT** : Bibliothèque pour implémenter l'authentification JWT (JSON Web Token) dans Django REST Framework.
 - **Django-environ** : Bibliothèque permettant de gérer les variables d'environnement depuis un fichier .env pour une configuration flexible de l'application.
 - **Pip** : Gestionnaire de paquets Python utilisé pour l'installation des dépendances.
-- **SQLite** : Base de données par défaut pour le développement local.
+- **SQLite** : Base de données pour mon développement en local.
   
 ### Other
 
@@ -40,4 +40,4 @@ Le projet **Prévisionnel** consiste en une application backend (pour le moment)
 
 - Création et gestion des budgets.
 
-- Authentification JWT pour sécuriser les API.
+- Authentification JWT pour sécuriser l'API.
