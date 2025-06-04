@@ -32,12 +32,94 @@ Le projet **Prévisionnel** consiste en une application web qui permet de gérer
 
 ## Fonctionnalités
 
-- Inscription, connexion et déconnexion d'un·e utilisateur·ice via des API sécurisées avec JWT.
+- Inscription, connexion, déconnexion et suppression d'un·e utilisateur·ice via des API sécurisées avec JWT.
 
-- Création et gestion des catégories de dépenses.
+- Modification du mot de passe d'un·e utilisateur·ice connecté·e.
 
-- Ajout et suivi des revenus et dépenses pour chaque utilisateur·ice.
+- Création et gestion (modification et suppression) des catégories de dépenses.
 
-- Création et gestion des budgets.
+- Création et gestion (modification et suppression) des revenus et dépenses.
+
+- Création et gestion (modification et suppression) des budgets.
 
 - Authentification JWT pour sécuriser l'API.
+
+## Démo
+
+[![Démo de l'application](https://markdown-videos-api.jorgenkh.no/youtube/pS-tHBDF72A)](https://youtu.be/pS-tHBDF72A)
+
+## Installation et lancement de l'application
+
+⚠️ Prérequis
+
+- Python 3.12+
+- VueJs 3
+- pip
+- Une base de données SQLite
+- npm
+
+### Étapes d'installation
+
+1. Clonez le *repository*.
+
+```sh
+git clone [LIEN](https://github.com/thomas-mosset/previsionnel-django-vue) 
+cd previsionnel-django-vue
+```
+
+2. Rendez-vous dans le dossier ```back```...
+
+```sh
+cd back
+````
+
+... Et installez les dépendances / paquets nécessaires pour le backend :
+  
+```sh
+pip install -r requirements.txt
+````
+
+3. Créez et configurez un fichier ```.env``` à la racine du dossier ```back``` et définissez les variables suivantes :
+
+````ini
+SECRET_KEY=votre_cle_secrète
+ALLOWED_HOSTS=localhost,127.0.0.1
+DATABASE_URL=db.sqlite3
+````
+
+4. Effectuez les migrations de la base de données.
+
+```sh
+python manage.py migrate
+```
+
+5. Créez un super utilisateur (optionnel pour l'admin + refaire une migration en cas de création d’un super utilisateur).
+
+```sh
+python manage.py createsuperuser
+python manage.py migrate
+```
+
+6. Démarrez le serveur back. (L'API sera disponible à <http://127.0.0.1:8000/>. Les différentes routes sont listées dans le dossier ```docs``` à la racine du projet.)
+
+```sh
+python manage.py runserver
+```
+
+7. Ouvrez un nouveau terminal et rendez-vous dans le dossier ```front``` du projet.
+
+```sh
+cd front
+```
+
+8. Installez les dépendances / paquets nécessaires pour le frontend :
+
+```sh
+npm install
+```
+
+9.  Démarrez le serveur front. (L'app sera disponible à <http://localhost:5173/>.)
+
+```sh
+npm run dev
+```
