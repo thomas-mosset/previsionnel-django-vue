@@ -16,12 +16,14 @@
               label="Nom d'utilisateur"
               v-model="username"
               :rule="[rules.required]"
+              data-cy="username"
             />
 
             <v-text-field
               label="Adresse mail"
               v-model="email"
               :rule="[rules.required, rules.email]"
+              data-cy="email"
             />
 
             <v-text-field
@@ -29,6 +31,7 @@
               type="password"
               v-model="password"
               :rules="[rules.required]"
+              data-cy="password"
             />
 
           <v-btn type="submit" variant="tonal" color="grey-darken-4" :disabled="!valid" class="mt-4" block>
