@@ -24,6 +24,7 @@
             md="6"
           >
             <v-card
+              :data-cy="`card-${card.name.toLowerCase()}`"
               color="grey-darken-4"
               class="mx-auto text-white py-8"
               elevation="8"
