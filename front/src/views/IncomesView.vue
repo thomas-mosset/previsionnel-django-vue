@@ -28,6 +28,7 @@
                                         class="mx-1"
                                         v-model="description"
                                         label="Description"
+                                        data-cy="income-description"
                                     ></v-text-field>
                                 </v-col>
 
@@ -41,6 +42,7 @@
                                         item-value="id"
                                         :rules="[rules.required]"
                                         no-data-text="Aucune donnée disponible"
+                                        data-cy="income-category"
                                     ></v-select>
                                 </v-col>
 
@@ -51,6 +53,7 @@
                                         :min="1"
                                         v-model="amount"
                                         :rules="[rules.required]"
+                                        data-cy="income-amount"
                                     ></v-number-input>
                                 </v-col>
    
@@ -61,6 +64,7 @@
                                         label="Date"
                                         type="date"
                                         :rules="[rules.required]"
+                                        data-cy="income-date"
                                     ></v-text-field>
                                 </v-col>
 
@@ -71,6 +75,7 @@
                                         variant="tonal"
                                         color="grey-darken-4"
                                         :disabled="!valid"
+                                        data-cy="income-submit"
                                     >
                                         Ajouter
                                     </v-btn>

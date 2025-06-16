@@ -101,3 +101,79 @@ describe('Prévisionnel App - Page des revenus - IncomesView (mocked) - authenti
     cy.contains('1500 €');
   });
 });
+
+
+describe('Prévisionnel App - Page des revenus - IncomesView (add an income through form) - authenticated', () => {
+  const mockedIncomes = [];
+
+  const mockedCategories = [
+    { id: 1, name: 'Autres', type: 'INCOME' },
+    { id: 2, name: 'Salaire', type: 'INCOME' }
+  ];
+
+  beforeEach(() => {
+    cy.intercept('GET', '/api/incomes/', { statusCode: 200, body: mockedIncomes }).as('getIncomes');
+    cy.intercept('GET', '/api/categories/', { statusCode: 200, body: mockedCategories }).as('getCategories');
+
+    cy.visit('http://localhost:5173/login');
+
+    cy.window().then(win => {
+        win.localStorage.setItem('token', 'fake-access-token');
+        win.localStorage.setItem('refreshToken', 'fake-refresh-token');
+        win.localStorage.setItem('user', 'Randomuser');
+        win.localStorage.setItem('userEmail', 'random@gmail.com');
+
+        win.authStore.initialize();
+
+        expect(win.authStore.isAuthenticated).to.be.true;
+    });
+
+    cy.visit('http://localhost:5173/profil/incomes');
+
+    cy.wait('@getIncomes');
+    cy.wait('@getCategories');
+  });
+
+  it('allows the user to add an income through the form', () => {
+    cy.intercept('POST', '/api/incomes', (req) => {
+      expect(req.body).to.include({
+        category: 2,
+        amount: 2000,
+        date: '2025-06-16',
+        description: 'Salaire test'
+      });
+
+      req.reply({
+        statusCode: 201,
+        body: {
+          id: 1,
+          ...req.body
+        }
+      });
+    }).as('postIncome');
+
+    // write into form
+    cy.get('[data-cy=income-description]').type('Salaire test');
+
+    // we use Vuetify (v-select), therefore we have to click on the v-select and then click on the category that we want in the list
+    // else it won't work
+    cy.get('[data-cy=income-category]').click();
+    cy.get('.v-list-item-title').contains('Salaire').click(); // no [] because we target a CSS selector
+
+    cy.get('[data-cy=income-date]').type('2025-06-16');
+    cy.get('[data-cy=income-amount]').type('2000');
+
+    // click on submit in form
+    cy.get('[data-cy=income-submit]').click();
+
+    // wait for POST request to happen
+    cy.wait('@postIncome');
+
+    // check if newly added income appears on screen
+    cy.contains('Salaire test').should('exist');
+    cy.contains('2000').should('exist');
+
+    // check if the snackbar message appears on screen
+    cy.contains('Revenu ajouté !').should('exist');
+  });
+});
