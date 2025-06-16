@@ -100,6 +100,28 @@ describe('Prévisionnel App - Page des revenus - IncomesView (mocked) - authenti
     cy.contains('Salaire Juin');
     cy.contains('1500 €');
   });
+
+
+  // TODO EDIT INCOME
+
+
+  // delete an income
+  it('deletes an income', () => {
+    // intercept delete request
+    cy.intercept('DELETE', '/api/incomes/1', { statusCode: 204 }).as('deleteIncome');
+
+    // check if the element that we want to delete exists
+    cy.contains('Salaire Juin').should('exist');
+
+    // click on the delete btn
+    cy.get('[data-cy="income-delete"]').first().click();
+
+    // wait for DELETE request
+    cy.wait('@deleteIncome');
+
+    // check that the element is no longer here
+    cy.contains('Salaire Juin').should('not.exist');
+  });
 });
 
 

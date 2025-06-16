@@ -192,7 +192,7 @@
                                             <v-icon color="warning" icon="mdi-pencil"></v-icon>
                                         </v-btn>
 
-                                        <v-btn @click="deleteIncome(item.id)" class="ma-1">
+                                        <v-btn @click="deleteIncome(item.id)" class="ma-1" data-cy="income-delete">
                                             <v-icon color="red" icon="mdi-delete"></v-icon>
                                         </v-btn>
                                     </div>
