@@ -25,7 +25,11 @@ Le projet **Prévisionnel** consiste en une application web qui permet de gérer
 - **Django-environ** : Bibliothèque permettant de gérer les variables d'environnement depuis un fichier .env pour une configuration flexible de l'application.
 - **Pip** : Gestionnaire de paquets Python utilisé pour l'installation des dépendances.
 - **SQLite** : Base de données pour mon développement en local.
-  
+
+### Tests
+
+- **Cypress** : Utilisé pour tester le fonctionnement de l'application (e2e) en simulant un comportement utilisateur dans le navigateur. (Exemple : inscription, connexion et accès à son profil, ajout, édition et suppression d'un revenu.)
+
 ### Other
 
 - **Postman** : Utilisé pour tester et interagir avec l'API REST, notamment pour envoyer des requêtes HTTP et vérifier les réponses.

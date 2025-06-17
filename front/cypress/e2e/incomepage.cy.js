@@ -102,7 +102,6 @@ describe('Prévisionnel App - Page des revenus - IncomesView (mocked) - authenti
   });
 
 
-  // TODO EDIT INCOME
   it('updates an income', () => {
     cy.intercept('PUT', '/api/incomes/1', (req) => {
       expect(req.body).to.include({
