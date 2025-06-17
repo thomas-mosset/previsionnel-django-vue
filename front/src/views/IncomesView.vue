@@ -116,6 +116,7 @@
                                             label="Date"
                                             type="date"
                                             hide-details
+                                            data-cy="income-update-date"
                                         ></v-text-field>
                                     </div>
                                     <div v-else>
@@ -125,7 +126,7 @@
 
                                 <td>
                                     <div v-if="editingIncomeId === item.id">
-                                        <v-text-field v-model="editedDescription" hide-details />
+                                        <v-text-field v-model="editedDescription" hide-details data-cy="income-update-description" />
                                     </div>
 
                                     <div v-else>
@@ -149,6 +150,7 @@
                                             item-value="id"
                                             no-data-text="Aucune donnée disponible"
                                             hide-details
+                                            data-cy="income-update-category"
                                         ></v-select>
                                     </div>
 
@@ -165,6 +167,7 @@
                                             :min="1"
                                             v-model="editedAmount"
                                             hide-details
+                                            data-cy="income-update-amount"
                                         ></v-number-input>
                                     </div>
 
@@ -177,7 +180,7 @@
                                 <td>
                                     <!-- EDIT MODE -->
                                     <div v-if="editingIncomeId === item.id">
-                                        <v-btn @click="saveEditedIncome" class="mx-1">
+                                        <v-btn @click="saveEditedIncome" class="mx-1" data-cy="income-save-update">
                                             <v-icon color="green-darken-4" icon="mdi-check"></v-icon>
                                         </v-btn>
 
@@ -188,7 +191,7 @@
 
                                     <!-- DISPLAY MODE -->
                                     <div v-else>
-                                        <v-btn @click="editIncome(item)" class="mx-1">
+                                        <v-btn @click="editIncome(item)" class="mx-1" data-cy="income-update">
                                             <v-icon color="warning" icon="mdi-pencil"></v-icon>
                                         </v-btn>
 

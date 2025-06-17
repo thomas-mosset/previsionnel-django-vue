@@ -103,6 +103,53 @@ describe('Prévisionnel App - Page des revenus - IncomesView (mocked) - authenti
 
 
   // TODO EDIT INCOME
+  it('updates an income', () => {
+    cy.intercept('PUT', '/api/incomes/1', (req) => {
+      expect(req.body).to.include({
+        category: 2,
+        amount: 2500,
+        date: '2025-06-17',
+        description: 'Salaire Juin UPDATE'
+      });
+
+      req.reply({
+        statusCode: 201,
+        body: {
+          id: 1,
+          ...req.body
+        }
+      });
+    }).as('updatedIncome');
+
+    // check if income exists
+    cy.contains('Salaire Juin').should('exist');
+
+    // trigger the edit form
+    cy.get('[data-cy=income-update]').first().click();
+
+    // fill the edit form
+    cy.get('[data-cy=income-update-date]').type('2025-06-17');
+    cy.get('[data-cy=income-update-description]').clear().type('Salaire Juin UPDATE');
+    cy.get('[data-cy=income-update-category]').click();
+    cy.get('[data-cy=income-update-amount] input').clear().type('2500');
+    // Open the dropdown
+    cy.get('[data-cy=income-update-category]').click();
+
+    // Wait for the dropdown menu to render, then select the category
+    cy.get('body .v-list-item-title', { timeout: 5000 })
+      .contains('Salaire')
+      .click();
+
+    // submit edit form
+    cy.get('[data-cy=income-save-update]').click();
+
+    // wait for PU request to happen
+    cy.wait('@updatedIncome')
+
+    // check if newly edited income appears on screen
+    cy.contains('Salaire Juin UPDATE').should('exist');
+    cy.contains('2500').should('exist');
+  });
 
 
   // delete an income
