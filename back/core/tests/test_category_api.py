@@ -17,7 +17,7 @@ class CategoryAPITest(APITestCase):
         data = {'name': 'Salaire', 'type': 'INCOME'}
         response = self.client.post(self.url, data)
 
-        print(response.data) # debug
+        # print(response.data) # debug
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Category.objects.count(), 1)
@@ -35,8 +35,8 @@ class CategoryAPITest(APITestCase):
         Category.objects.create(name="Vêtements", type='EXPENSE', user=self.user)
         response = self.client.get(self.url)
 
-        # Pour debug : print(response.data)
-        print(response.data)
+        # debug
+        # print(response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
