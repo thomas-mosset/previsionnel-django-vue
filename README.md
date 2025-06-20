@@ -29,6 +29,7 @@ Le projet **Prévisionnel** consiste en une application web qui permet de gérer
 ### Tests
 
 - **Cypress** : Utilisé pour tester le fonctionnement de l'application (e2e) en simulant un comportement utilisateur dans le navigateur. (Exemple : inscription, connexion et accès à son profil, ajout, édition et suppression d'un revenu.)
+- **APITestCase (fourni par Django REST Framework)** : Utilisé pour tester les endpoints de l’API backend. Ces tests d'intégration vérifient que les opérations CRUD (création, lecture, mise à jour, suppression) fonctionnent correctement en simulant des requêtes HTTP authentifiées.
 
 ### Other
 
